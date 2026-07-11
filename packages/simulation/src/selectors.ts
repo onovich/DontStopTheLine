@@ -16,6 +16,8 @@ export interface FactoryStatistics {
   readonly nodeCount: number;
   readonly stored: Readonly<Record<ItemKind, number>>;
   readonly tick: number;
+  readonly level: number;
+  readonly bottlenecks: readonly string[];
 }
 
 export function selectNode(state: FactoryState, nodeId: string): NodeSummary | null {
@@ -24,7 +26,7 @@ export function selectNode(state: FactoryState, nodeId: string): NodeSummary | n
 }
 
 export function selectStatistics(state: FactoryState): FactoryStatistics {
-  const stored: Record<ItemKind, number> = { ore: 0, plate: 0 };
+  const stored: Record<ItemKind, number> = { ore: 0, coal: 0, plate: 0, gear: 0 };
   for (const node of Object.values(state.nodes)) {
     for (const item of [...node.input, ...node.output]) stored[item] += 1;
   }
@@ -34,6 +36,10 @@ export function selectStatistics(state: FactoryState): FactoryStatistics {
     nodeCount: Object.keys(state.nodes).length,
     stored,
     tick: state.tick,
+    level: state.level,
+    bottlenecks: Object.values(state.nodes)
+      .filter((node) => productionStatus(node) === 'OUTPUT_FULL')
+      .map((node) => node.id),
   };
 }
 

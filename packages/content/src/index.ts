@@ -8,15 +8,34 @@ export const starterRecipe: Recipe = {
   durationTicks: 3,
 };
 
+export const strategyRecipes: readonly Recipe[] = [
+  starterRecipe,
+  {
+    id: 'assemble-gear',
+    inputs: [
+      { kind: 'plate', quantity: 1 },
+      { kind: 'coal', quantity: 1 },
+    ],
+    output: { kind: 'gear', quantity: 1 },
+    durationTicks: 4,
+  },
+];
+
+export function recipeInputs(recipe: Recipe): readonly Recipe['output'][] {
+  return recipe.inputs ?? (recipe.input === undefined ? [] : [recipe.input]);
+}
+
 export const starterNodes: readonly NodeDefinition[] = [
   { kind: 'source', inputCapacity: 0, outputCapacity: 2, workCapacity: 0 },
   { kind: 'processor', inputCapacity: 2, outputCapacity: 2, workCapacity: 1 },
   { kind: 'storage', inputCapacity: 4, outputCapacity: 4, workCapacity: 0 },
+  { kind: 'warehouse', inputCapacity: 8, outputCapacity: 8, workCapacity: 0 },
+  { kind: 'router', inputCapacity: 4, outputCapacity: 4, workCapacity: 0 },
   { kind: 'seller', inputCapacity: 1, outputCapacity: 0, workCapacity: 1 },
 ];
 
 export function hasValidStarterContent(): boolean {
-  return isValidRecipe(starterRecipe) && starterNodes.every(isValidNodeDefinition);
+  return strategyRecipes.every(isValidRecipe) && starterNodes.every(isValidNodeDefinition);
 }
 
 function isValidNodeDefinition(definition: NodeDefinition): boolean {

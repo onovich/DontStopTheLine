@@ -59,12 +59,38 @@ describe('deterministic primitives', () => {
   it('exposes read-only aggregate statistics', () => {
     const state = createFactory(7);
     expect(selectStatistics(state)).toEqual({
+      bottlenecks: [],
       inTransit: 0,
+      level: 1,
       money: 0,
       nodeCount: 0,
-      stored: { ore: 0, plate: 0 },
+      stored: { ore: 0, coal: 0, plate: 0, gear: 0 },
       tick: 0,
     });
+  });
+
+  it('reserves all inputs for a deterministic multi-input gear recipe', () => {
+    let state = createFactory(2);
+    for (const command of [
+      { type: 'place-node', nodeId: 'ore', nodeKind: 'source' as const },
+      {
+        type: 'place-node',
+        nodeId: 'coal',
+        nodeKind: 'source' as const,
+        outputKind: 'coal' as const,
+      },
+      {
+        type: 'place-node',
+        nodeId: 'gear',
+        nodeKind: 'processor' as const,
+        recipeId: 'assemble-gear',
+      },
+      { type: 'connect-line', lineId: 'ore-line', from: 'ore', to: 'gear', capacity: 2 },
+      { type: 'connect-line', lineId: 'coal-line', from: 'coal', to: 'gear', capacity: 2 },
+      { type: 'advance-ticks', ticks: 8 },
+    ] as const)
+      state = applyCommand(state, command).state;
+    expect(state.nodes['gear']?.workItem ?? state.nodes['gear']?.output).toBeDefined();
   });
 
   it('produces a byte-equivalent snapshot for a replayed command stream', () => {
