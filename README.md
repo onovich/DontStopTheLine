@@ -4,7 +4,7 @@
 
 当前阶段：架构与研发基线。权威设计输入见 `docs/节点工厂_游戏设计文档_GDD_v1.pdf`，工程决策见 `docs/architecture.md`、`docs/ui-design.md` 与 `docs/roadmap.md`。
 
-当前执行计划：[`docs/phase-1-goal-mode-execution-guide.md`](docs/phase-1-goal-mode-execution-guide.md)，预算 10 轮。
+当前执行计划：[`docs/phase-2-goal-mode-execution-guide.md`](docs/phase-2-goal-mode-execution-guide.md)，预算 12 轮。
 
 ## 工程命令
 
