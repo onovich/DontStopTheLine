@@ -45,6 +45,14 @@
 - Exact repair validation: `CI=true pnpm install --frozen-lockfile`, `pnpm check`,
   `pnpm build`, `pnpm smoke`, and `git diff --check` all passed.
 
+## pnpm workspace-config repair
+
+- Repair commit: `6cf5d4a106c250e0c91fb2f95116bd90b11ee31f`
+- Moved the `@eslint/eslintrc` override from `package.json` to `pnpm-workspace.yaml`,
+  the supported configuration source for the project pnpm runtime.
+- Exact repair validation: `CI=true pnpm install --frozen-lockfile`, `pnpm check`,
+  `pnpm build`, `pnpm smoke`, and `git diff --check` all passed.
+
 ## 自检结论
 
 - Debug：领域纯函数、种子与时钟注入均有最小测试；Web 入口通过真实浏览器路径验证。
