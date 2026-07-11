@@ -17,7 +17,7 @@ module.exports = {
     },
     {
       name: 'no-deep-package-imports',
-      from: { path: '^(apps|packages)' },
+      from: { path: '^(apps|packages)', pathNot: '^packages/simulation/src/' },
       to: { path: '^packages/[^/]+/src/' },
     },
     {

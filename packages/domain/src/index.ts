@@ -38,6 +38,7 @@ export type DomainEvent =
   | { readonly type: 'node-removed'; readonly nodeId: EntityId }
   | { readonly type: 'line-connected'; readonly lineId: EntityId }
   | { readonly type: 'line-disconnected'; readonly lineId: EntityId }
+  | { readonly type: 'production-completed'; readonly nodeId: EntityId; readonly item: ItemKind }
   | {
       readonly type: 'command-rejected';
       readonly command: Command;
@@ -45,7 +46,7 @@ export type DomainEvent =
     };
 
 export type RejectionReason =
-  'DUPLICATE_ID' | 'UNKNOWN_NODE' | 'UNKNOWN_LINE' | 'INVALID_TICK_COUNT';
+  'DUPLICATE_ID' | 'UNKNOWN_NODE' | 'UNKNOWN_LINE' | 'INVALID_TICK_COUNT' | 'INVALID_COMMAND';
 
 export function isValidRecipe(recipe: Recipe): boolean {
   return (
