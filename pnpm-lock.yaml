@@ -80,7 +80,11 @@ importers:
 
   packages/platform: {}
 
-  packages/simulation: {}
+  packages/simulation:
+    dependencies:
+      '@dstl/domain':
+        specifier: workspace:*
+        version: link:../domain
 
   packages/testkit: {}
 

@@ -1,28 +1,47 @@
-export interface SimulationClock {
-  readonly now: () => number;
-}
+import type { Command, DomainEvent } from '@dstl/domain';
 
-export interface SimulationOptions {
-  readonly clock: SimulationClock;
-  readonly seed: number;
-}
+export const STATE_VERSION = 1;
 
-export interface SimulationSnapshot {
-  readonly randomValue: number;
+export interface QueuedEvent {
+  readonly event: DomainEvent;
+  readonly sequence: number;
   readonly tick: number;
 }
 
-export function createSimulationSnapshot(options: SimulationOptions): SimulationSnapshot {
-  return {
-    randomValue: seededValue(options.seed),
-    tick: options.clock.now(),
-  };
+export interface GameState {
+  readonly seed: number;
+  readonly sequence: number;
+  readonly tick: number;
+  readonly version: typeof STATE_VERSION;
 }
 
-function seededValue(seed: number): number {
-  let value = seed >>> 0;
+export type CommandResult =
+  | { readonly accepted: true; readonly events: readonly DomainEvent[]; readonly state: GameState }
+  | { readonly accepted: false; readonly event: DomainEvent; readonly state: GameState };
+
+export function createGameState(seed: number): GameState {
+  return { seed: seed >>> 0, sequence: 0, tick: 0, version: STATE_VERSION };
+}
+
+export function nextRandom(state: GameState): readonly [number, GameState] {
+  let value = state.seed || 1;
   value ^= value << 13;
   value ^= value >>> 17;
   value ^= value << 5;
-  return value >>> 0;
+  const seed = value >>> 0;
+  return [seed, { ...state, seed }];
+}
+
+export function sortQueue(events: readonly QueuedEvent[]): readonly QueuedEvent[] {
+  return [...events].sort(
+    (left, right) => left.tick - right.tick || left.sequence - right.sequence,
+  );
+}
+
+export function reject(
+  state: GameState,
+  command: Command,
+  reason: 'INVALID_TICK_COUNT',
+): CommandResult {
+  return { accepted: false, event: { type: 'command-rejected', command, reason }, state };
 }

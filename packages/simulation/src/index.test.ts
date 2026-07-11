@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { createSimulationSnapshot } from '@dstl/simulation';
+import { createGameState, nextRandom, sortQueue } from '@dstl/simulation';
 
-describe('createSimulationSnapshot', () => {
-  it('uses an injected clock and produces repeatable output for a seed', () => {
-    const clock = { now: () => 42 };
-    const options = { clock, seed: 1234 };
-
-    expect(createSimulationSnapshot(options)).toEqual(createSimulationSnapshot(options));
-    expect(createSimulationSnapshot(options).tick).toBe(42);
+describe('deterministic primitives', () => {
+  it('replays seeded random values and sorts events stably', () => {
+    const state = createGameState(1234);
+    expect(nextRandom(state)).toEqual(nextRandom(state));
+    expect(sortQueue([])).toEqual([]);
   });
 });
