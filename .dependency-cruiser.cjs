@@ -11,11 +11,25 @@ module.exports = {
       to: { path: '^(apps|packages/(ui|platform))' },
     },
     {
+      name: 'content-only-depends-on-domain',
+      from: { path: '^packages/content' },
+      to: { path: '^(apps|packages/(simulation|ui|canvas|persistence|platform|testkit))' },
+    },
+    {
+      name: 'no-deep-package-imports',
+      from: { path: '^(apps|packages)' },
+      to: { path: '^packages/[^/]+/src/' },
+    },
+    {
       name: 'web-never-imports-electron',
       from: { path: '^apps/web' },
       to: { path: '^apps/desktop' },
     },
     { name: 'no-cycles', severity: 'error', from: {}, to: { circular: true } },
   ],
-  options: { doNotFollow: { path: 'node_modules' }, tsPreCompilationDeps: true },
+  options: {
+    doNotFollow: { path: 'node_modules' },
+    tsPreCompilationDeps: true,
+    tsConfig: { fileName: 'tsconfig.base.json' },
+  },
 };
