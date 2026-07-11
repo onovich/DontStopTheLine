@@ -22,7 +22,7 @@ idempotency:
   last_planner_dispatch: 2026-07-11T16:00:00+08:00
   last_planner_dispatch_status: ready
   last_planner_dispatch_guide: docs/phase-3-goal-mode-execution-guide.md
-  last_executor_report_commit: e86d855
+  last_executor_report_commit: f69d0a1
   last_executor_report_status: ready_for_check
   last_executor_report_guide: docs/phase-3-goal-mode-execution-guide.md
   last_executor_report_at: 2026-07-11T18:38:00+08:00
