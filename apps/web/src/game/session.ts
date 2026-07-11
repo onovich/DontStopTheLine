@@ -48,6 +48,7 @@ export interface GameSession {
   getSnapshot(): GameSnapshot;
   moveNode(nodeId: EntityId, position: Point): boolean;
   placeNode(kind: NodeKind, position: Point): EntityId | null;
+  removeNode(nodeId: EntityId): boolean;
   setMode(mode: InteractionMode): void;
   setPaused(paused: boolean): void;
   setSelectedNode(nodeId: EntityId | null): void;
@@ -101,6 +102,8 @@ export function createGameSession(seed = 1): GameSession {
       }
     },
     connect(from, to) {
+      if (Object.values(state.factory.lines).some((line) => line.from === from || line.to === to))
+        return false;
       return apply({ type: 'connect-line', lineId: nextLineId(), from, to });
     },
     getSnapshot() {
@@ -130,6 +133,15 @@ export function createGameSession(seed = 1): GameSession {
         { ...state.ui, mode: 'select', positions, selectedNodeId: nodeId },
       );
       return placed ? nodeId : null;
+    },
+    removeNode(nodeId) {
+      if (state.factory.nodes[nodeId] === undefined) return false;
+      const { [nodeId]: removed, ...positions } = state.ui.positions;
+      void removed;
+      return apply(
+        { type: 'remove-node', nodeId },
+        { ...state.ui, positions, selectedNodeId: null },
+      );
     },
     setMode(mode) {
       if (mode === state.ui.mode) return;
