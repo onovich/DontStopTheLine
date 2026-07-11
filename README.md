@@ -12,5 +12,9 @@
 - `pnpm check`：格式、静态检查、类型、测试与架构边界总门禁
 - `pnpm build`：构建所有工作区
 - `pnpm test`：运行测试
+- `pnpm smoke`：以 Chromium 无头模式验证 Web 空壳可加载且无 console error
+
+首次安装后运行 `pnpm exec playwright install chromium` 下载本地 smoke 所需浏览器。CI 使用
+`pnpm install --frozen-lockfile`，随后依次执行 `pnpm check`、`pnpm build` 和 `pnpm smoke`。
 
 Node.js 22+，pnpm 10+。正式实现从 Phase 0 开始。

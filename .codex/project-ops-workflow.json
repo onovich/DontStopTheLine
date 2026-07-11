@@ -16,7 +16,7 @@
     "structureCheck": { "commands": ["pnpm arch:check"] },
     "codegen": { "commands": [] },
     "docsCheck": { "commands": ["git diff --check"] },
-    "smoke": { "urls": [], "commands": [] },
+    "smoke": { "urls": ["http://127.0.0.1:4173"], "commands": ["pnpm smoke"] },
     "package": { "commands": ["pnpm build"] },
     "releaseDryRun": { "commands": ["pnpm check", "pnpm build"] }
   },
