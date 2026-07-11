@@ -12,17 +12,17 @@
 
 ## 轮次
 
-| 轮次 | Commit    | 内容                                     |
-| ---- | --------- | ---------------------------------------- |
-| 1    | `896417d` | domain/content contracts                 |
-| 2    | `a7f6bb8` | deterministic state and queue primitives |
-| 3    | `68f0d90` | node buffers and tick production         |
-| 4    | `beaeac0` | reserved-capacity line transport         |
-| 5    | `1a381f6` | processor/seller money flow              |
-| 6    | `e1b0551` | read-only selectors                      |
-| 7    | `003ee84` | replay snapshot verification             |
-| 8    | `d3aa942` | golden scenario, testkit and API docs    |
-| 9    | 未消耗    | 无缓冲修复需要                           |
+| 轮次 | Commit    | 内容                                      |
+| ---- | --------- | ----------------------------------------- |
+| 1    | `896417d` | domain/content contracts                  |
+| 2    | `a7f6bb8` | deterministic state and queue primitives  |
+| 3    | `68f0d90` | node buffers and tick production          |
+| 4    | `beaeac0` | reserved-capacity line transport          |
+| 5    | `1a381f6` | processor/seller money flow               |
+| 6    | `e1b0551` | read-only selectors                       |
+| 7    | `003ee84` | replay snapshot verification              |
+| 8    | `d3aa942` | golden scenario, testkit and API docs     |
+| 9    | `538c331` | work slots and logical tick timing repair |
 
 ## 覆盖
 
@@ -30,6 +30,7 @@
 - `NO_INPUT`、`OUTPUT_FULL`、`WORKING`、`NO_CONSUMER`、`TARGET_FULL`、`LINE_FULL`、
   `RECIPE_MISMATCH`、`SELLER_BUSY` 均有公开解释 API。
 - 相同 seed 与 command stream 的 snapshot 字节等价；盈利场景增加资金。
+- Source、processor 与 seller 的工作项和 `workUntil` 跨逻辑 tick 保持，storage 独立转发输入与输出缓冲。
 
 ## 最终验证
 
