@@ -2,6 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { createGameSession, LOGIC_TICK_MS } from './session.js';
 
 describe('game session', () => {
+  it('returns a cached snapshot until the authoritative state changes', () => {
+    const session = createGameSession();
+    const initial = session.getSnapshot();
+
+    expect(session.getSnapshot()).toBe(initial);
+    session.advanceFrame(LOGIC_TICK_MS);
+    expect(session.getSnapshot()).not.toBe(initial);
+  });
+
   it('advances the authoritative simulation only through the fixed-step adapter', () => {
     const session = createGameSession(7);
 

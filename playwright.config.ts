@@ -7,8 +7,10 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: 'pnpm --filter @dstl/web run dev -- --host 127.0.0.1 --port 4173',
-    port: 4173,
+    command: 'pnpm exec vite --host 127.0.0.1 --port 4173 --strictPort',
+    cwd: './apps/web',
+    url: 'http://127.0.0.1:4173',
+    timeout: 120_000,
     reuseExistingServer: !process.env.CI,
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],

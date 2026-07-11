@@ -67,9 +67,11 @@ export interface GameSession {
 
 export function createGameSession(seed = 1): GameSession {
   let state = initialSessionState(seed);
+  let cachedSnapshot = snapshotFor(state);
   const listeners = new Set<() => void>();
 
   const publish = (): void => {
+    cachedSnapshot = snapshotFor(state);
     for (const listener of listeners) listener();
   };
   const apply = (command: Command, nextUi = state.ui, recordHistory = true): boolean => {
@@ -113,13 +115,7 @@ export function createGameSession(seed = 1): GameSession {
       return apply({ type: 'connect-line', lineId: nextLineId(), from, to, capacity });
     },
     getSnapshot() {
-      return {
-        factory: state.factory,
-        paused: state.paused,
-        speed: state.speed,
-        statistics: selectStatistics(state.factory),
-        ui: state.ui,
-      };
+      return cachedSnapshot;
     },
     moveNode(nodeId, position) {
       if (state.factory.nodes[nodeId] === undefined) return false;
@@ -203,6 +199,16 @@ export function createGameSession(seed = 1): GameSession {
       publish();
       return true;
     },
+  };
+}
+
+function snapshotFor(state: SessionState): GameSnapshot {
+  return {
+    factory: state.factory,
+    paused: state.paused,
+    speed: state.speed,
+    statistics: selectStatistics(state.factory),
+    ui: state.ui,
   };
 }
 

@@ -28,3 +28,9 @@
 - `git diff --check`
 
 All commands pass. Deferred scope remains persistence, Electron, audio, production art, dynamic market, and minigames.
+
+## Smoke repair
+
+- Playwright now starts Vite from the explicit `apps/web` working directory, uses a fixed strict port, URL health probe, and a 120-second startup budget.
+- The session now caches its `getSnapshot()` value until an authoritative or UI state publish. This prevents React `useSyncExternalStore` from entering an update loop during the browser smoke path.
+- `CI=true pnpm smoke` passes from a cleared port with all three browser tests.
