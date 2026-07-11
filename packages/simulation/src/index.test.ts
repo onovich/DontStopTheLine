@@ -6,6 +6,8 @@ import {
   createGameState,
   nextRandom,
   productionStatus,
+  replayFactory,
+  serializeSnapshot,
   selectStatistics,
   sortQueue,
 } from '@dstl/simulation';
@@ -61,5 +63,18 @@ describe('deterministic primitives', () => {
       stored: { ore: 0, plate: 0 },
       tick: 0,
     });
+  });
+
+  it('produces a byte-equivalent snapshot for a replayed command stream', () => {
+    const commands: readonly Command[] = [
+      { type: 'place-node', nodeId: 'source', nodeKind: 'source' },
+      { type: 'place-node', nodeId: 'storage', nodeKind: 'storage' },
+      { type: 'connect-line', lineId: 'line', from: 'source', to: 'storage' },
+      { type: 'advance-ticks', ticks: 1 },
+      { type: 'advance-ticks', ticks: 1 },
+    ];
+    expect(serializeSnapshot(replayFactory(99, commands))).toBe(
+      serializeSnapshot(replayFactory(99, commands)),
+    );
   });
 });

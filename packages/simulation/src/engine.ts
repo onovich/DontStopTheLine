@@ -125,6 +125,21 @@ export function productionStatus(node: NodeState): BlockReason | null {
   return null;
 }
 
+export function replayFactory(seed: number, commands: readonly Command[]): FactoryState {
+  let state = createFactory(seed);
+  for (const command of commands) {
+    const result = applyCommand(state, command);
+    state = result.state;
+  }
+  return state;
+}
+
+export function serializeSnapshot(state: FactoryState): string {
+  const nodes = Object.entries(state.nodes).sort(([left], [right]) => left.localeCompare(right));
+  const lines = Object.entries(state.lines).sort(([left], [right]) => left.localeCompare(right));
+  return JSON.stringify({ ...state, nodes, lines });
+}
+
 function connectLine(
   state: FactoryState,
   command: Extract<Command, { type: 'connect-line' }>,

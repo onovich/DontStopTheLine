@@ -9,8 +9,11 @@ export {
 } from './core.js';
 export {
   applyCommand,
+  type BlockReason,
   createFactory,
   productionStatus,
+  replayFactory,
+  serializeSnapshot,
   type FactoryState,
   type NodeState,
 } from './engine.js';
