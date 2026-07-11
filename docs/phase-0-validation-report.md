@@ -37,6 +37,14 @@
 所有命令通过；架构检查为 0 violations，Playwright Chromium smoke 通过，工作树与
 `main...origin/main` 保持干净。
 
+## Supply-chain repair
+
+- Repair commit: `7fac7d478c4738b142a184d1e992e6cf7cfe5914`
+- Fixed `eslint` and `@eslint/js` at `9.35.0`, with `@eslint/eslintrc` overridden to
+  `3.3.1`; these versions predate the active minimum release-age window.
+- Exact repair validation: `CI=true pnpm install --frozen-lockfile`, `pnpm check`,
+  `pnpm build`, `pnpm smoke`, and `git diff --check` all passed.
+
 ## 自检结论
 
 - Debug：领域纯函数、种子与时钟注入均有最小测试；Web 入口通过真实浏览器路径验证。
