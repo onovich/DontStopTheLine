@@ -41,6 +41,7 @@ export type DomainEvent =
   | { readonly type: 'production-completed'; readonly nodeId: EntityId; readonly item: ItemKind }
   | { readonly type: 'item-dispatched'; readonly lineId: EntityId; readonly item: ItemKind }
   | { readonly type: 'item-arrived'; readonly lineId: EntityId; readonly item: ItemKind }
+  | { readonly type: 'item-sold'; readonly nodeId: EntityId; readonly amount: number }
   | {
       readonly type: 'command-rejected';
       readonly command: Command;

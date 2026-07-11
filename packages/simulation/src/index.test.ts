@@ -36,8 +36,8 @@ describe('deterministic primitives', () => {
     let state = createFactory(1);
     const commands: readonly Command[] = [
       { type: 'place-node', nodeId: 'source', nodeKind: 'source' as const },
-      { type: 'place-node', nodeId: 'processor', nodeKind: 'processor' as const },
-      { type: 'connect-line', lineId: 'line', from: 'source', to: 'processor' },
+      { type: 'place-node', nodeId: 'storage', nodeKind: 'storage' as const },
+      { type: 'connect-line', lineId: 'line', from: 'source', to: 'storage' },
       { type: 'advance-ticks', ticks: 1 },
     ];
     for (const command of commands) {
@@ -45,9 +45,9 @@ describe('deterministic primitives', () => {
       if (!result.accepted) throw new Error('Expected accepted command.');
       state = result.state;
     }
-    expect(state.nodes['processor']?.reserved).toBe(1);
+    expect(state.nodes['storage']?.reserved).toBe(1);
     const arrived = applyCommand(state, { type: 'advance-ticks', ticks: 1 });
     if (!arrived.accepted) throw new Error('Expected arrival tick.');
-    expect(arrived.state.nodes['processor']?.input).toEqual(['ore']);
+    expect(arrived.state.nodes['storage']?.input).toEqual(['ore']);
   });
 });

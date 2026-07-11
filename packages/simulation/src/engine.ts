@@ -37,12 +37,13 @@ export interface TransitItem {
   readonly arrivalTick: number;
 }
 export interface FactoryState extends GameState {
+  readonly money: number;
   readonly nodes: Readonly<Record<EntityId, NodeState>>;
   readonly lines: Readonly<Record<EntityId, LineState>>;
 }
 
 export function createFactory(seed: number): FactoryState {
-  return { ...createGameState(seed), nodes: {}, lines: {} };
+  return { ...createGameState(seed), money: 0, nodes: {}, lines: {} };
 }
 
 export function applyCommand(state: FactoryState, command: Command): CommandResult<FactoryState> {
@@ -86,6 +87,30 @@ export function applyCommand(state: FactoryState, command: Command): CommandResu
     const output: readonly ItemKind[] = [...node.output, 'ore'];
     next = { ...next, nodes: { ...next.nodes, [node.id]: { ...node, output } } };
     events.push({ type: 'production-completed', nodeId: node.id, item: 'ore' });
+  }
+  for (const node of Object.values(next.nodes)) {
+    if (
+      node.kind === 'processor' &&
+      node.input[0] === 'ore' &&
+      node.output.length < OUTPUT_CAPACITY
+    ) {
+      next = {
+        ...next,
+        nodes: {
+          ...next.nodes,
+          [node.id]: { ...node, input: node.input.slice(1), output: [...node.output, 'plate'] },
+        },
+      };
+      events.push({ type: 'production-completed', nodeId: node.id, item: 'plate' });
+    }
+    if (node.kind === 'seller' && node.input[0] === 'plate') {
+      next = {
+        ...next,
+        money: next.money + 1,
+        nodes: { ...next.nodes, [node.id]: { ...node, input: node.input.slice(1) } },
+      };
+      events.push({ type: 'item-sold', nodeId: node.id, amount: 1 });
+    }
   }
   const dispatched = dispatchOutputs(next);
   next = dispatched[0];
@@ -182,7 +207,9 @@ function dispatchOutputs(state: FactoryState): readonly [FactoryState, readonly 
 }
 
 function accepts(node: NodeState, item: ItemKind): boolean {
-  return node.kind !== 'processor' || item === 'ore';
+  if (node.kind === 'processor') return item === 'ore';
+  if (node.kind === 'seller') return item === 'plate';
+  return true;
 }
 
 function accept(state: FactoryState, events: readonly DomainEvent[]): CommandResult<FactoryState> {
