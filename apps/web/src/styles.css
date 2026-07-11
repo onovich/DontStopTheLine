@@ -13,12 +13,16 @@ body {
   min-width: 320px;
 }
 
-.phase-zero-shell {
+button {
+  font: inherit;
+}
+
+.game-shell {
   display: grid;
+  gap: 1rem;
   min-height: 100vh;
-  place-content: center;
-  padding: 2rem;
-  background: radial-gradient(circle at top, #1e3734, transparent 50%), #101819;
+  padding: 1.25rem;
+  background: radial-gradient(circle at top, #1e3734, transparent 55%), #101819;
 }
 
 .eyebrow {
@@ -29,23 +33,104 @@ body {
 }
 
 h1,
-.chinese-title,
-.status {
+p {
   margin: 0;
 }
 
 h1 {
-  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   letter-spacing: -0.06em;
 }
 
-.chinese-title {
-  color: #f5c977;
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  margin-top: 0.35rem;
+.game-heading {
+  display: grid;
+  gap: 0.35rem;
 }
 
-.status {
+.game-heading > p:last-child,
+.camera-readout {
   color: #a5b7b5;
-  margin-top: 1.5rem;
+}
+
+.factory-board {
+  isolation: isolate;
+  min-height: 580px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #35505b;
+  border-radius: 14px;
+  cursor: grab;
+}
+
+.factory-board:active {
+  cursor: grabbing;
+}
+
+.factory-grid,
+.node-layer {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+.factory-grid {
+  pointer-events: none;
+}
+.node-layer {
+  transform-origin: 0 0;
+}
+.board-boundary {
+  border: 1px dashed transparent;
+  pointer-events: none;
+  position: absolute;
+}
+
+.factory-node {
+  align-content: center;
+  appearance: none;
+  background: #15252c;
+  border: 2px solid #4e6a74;
+  border-radius: 12px;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+  height: 98px;
+  padding: 0.65rem;
+  position: absolute;
+  text-align: left;
+  width: 142px;
+}
+
+.factory-node:hover,
+.factory-node.is-selected {
+  border-color: #7ecdc3;
+  box-shadow: 0 0 0 3px #7ecdc344;
+}
+.kind-source {
+  border-color: #749ac9;
+}
+.kind-seller {
+  border-color: #f5c977;
+}
+.node-kind {
+  color: #7ecdc3;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.node-name,
+.node-buffers {
+  font-size: 0.75rem;
+}
+.node-buffers {
+  color: #a5b7b5;
+}
+.camera-readout {
+  bottom: 0.7rem;
+  font-size: 0.75rem;
+  left: 0.8rem;
+  pointer-events: none;
+  position: absolute;
 }
