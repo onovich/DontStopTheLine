@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "exports": "./src/index.ts",
+  "dependencies": {
+    "@dstl/domain": "workspace:*",
+    "@dstl/simulation": "workspace:*"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",

@@ -20,6 +20,7 @@ export {
 export {
   explainBlock,
   selectNode,
+  selectRouteBlock,
   selectStatistics,
   type FactoryStatistics,
   type NodeSummary,

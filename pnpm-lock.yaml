@@ -86,7 +86,14 @@ importers:
         specifier: workspace:*
         version: link:../domain
 
-  packages/testkit: {}
+  packages/testkit:
+    dependencies:
+      '@dstl/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@dstl/simulation':
+        specifier: workspace:*
+        version: link:../simulation
 
   packages/ui: {}
 

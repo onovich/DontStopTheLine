@@ -18,3 +18,10 @@
 `pnpm install --frozen-lockfile`，随后依次执行 `pnpm check`、`pnpm build` 和 `pnpm smoke`。
 
 Node.js 22+，pnpm 10+。正式实现从 Phase 0 开始。
+
+## Phase 1 simulation API
+
+`@dstl/simulation` exposes the headless `createFactory`, `applyCommand`, `replayFactory`,
+`serializeSnapshot`, and read-only selector APIs. `@dstl/testkit` provides the fixed profit-chain
+fixture used for deterministic replay checks. No browser, canvas, Electron, or persistence APIs are
+part of the simulation package.

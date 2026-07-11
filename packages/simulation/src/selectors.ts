@@ -44,10 +44,31 @@ export function explainBlock(reason: BlockReason): string {
     NO_INPUT: 'The processor has no compatible input.',
     OUTPUT_FULL: 'The output buffer is full.',
     RECIPE_MISMATCH: 'The target cannot accept this item kind.',
+    SELLER_BUSY: 'The seller is currently completing a sale.',
     TARGET_FULL: 'The target input capacity is reserved or full.',
     WORKING: 'The node is currently processing.',
   };
   return explanations[reason];
+}
+
+export function selectRouteBlock(state: FactoryState, lineId: string): BlockReason | null {
+  const line = state.lines[lineId];
+  if (line === undefined) return 'NO_CONSUMER';
+  const source = state.nodes[line.from];
+  const target = state.nodes[line.to];
+  if (source === undefined || target === undefined || source.output.length === 0)
+    return 'NO_CONSUMER';
+  if (line.items.length > 0) return 'LINE_FULL';
+  if (target.input.length + target.reserved >= 2) return 'TARGET_FULL';
+  const item = source.output[0];
+  if (
+    item === undefined ||
+    (target.kind === 'processor' && item !== 'ore') ||
+    (target.kind === 'seller' && item !== 'plate')
+  )
+    return 'RECIPE_MISMATCH';
+  if (target.kind === 'seller' && target.workUntil !== null) return 'SELLER_BUSY';
+  return null;
 }
 
 function summarize(node: NodeState): NodeSummary {

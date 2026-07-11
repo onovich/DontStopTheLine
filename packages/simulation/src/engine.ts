@@ -15,7 +15,8 @@ export type BlockReason =
   | 'NO_CONSUMER'
   | 'TARGET_FULL'
   | 'LINE_FULL'
-  | 'RECIPE_MISMATCH';
+  | 'RECIPE_MISMATCH'
+  | 'SELLER_BUSY';
 const OUTPUT_CAPACITY = 2;
 
 export interface NodeState {

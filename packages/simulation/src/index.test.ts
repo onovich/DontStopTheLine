@@ -4,6 +4,7 @@ import {
   applyCommand,
   createFactory,
   createGameState,
+  explainBlock,
   nextRandom,
   productionStatus,
   replayFactory,
@@ -76,5 +77,20 @@ describe('deterministic primitives', () => {
     expect(serializeSnapshot(replayFactory(99, commands))).toBe(
       serializeSnapshot(replayFactory(99, commands)),
     );
+  });
+
+  it('explains every core blocking state', () => {
+    for (const reason of [
+      'NO_INPUT',
+      'OUTPUT_FULL',
+      'WORKING',
+      'NO_CONSUMER',
+      'TARGET_FULL',
+      'LINE_FULL',
+      'RECIPE_MISMATCH',
+      'SELLER_BUSY',
+    ] as const) {
+      expect(explainBlock(reason)).not.toHaveLength(0);
+    }
   });
 });
