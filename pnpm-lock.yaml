@@ -49,6 +49,12 @@ importers:
 
   apps/web:
     dependencies:
+      '@dstl/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@dstl/simulation':
+        specifier: workspace:*
+        version: link:../../packages/simulation
       react:
         specifier: ^19.1.1
         version: 19.2.7
