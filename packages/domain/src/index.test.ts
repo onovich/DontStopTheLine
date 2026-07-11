@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { incrementCounter } from '@dstl/domain';
+import { isValidRecipe } from '@dstl/domain';
 
-describe('incrementCounter', () => {
-  it('returns a new value without mutating its input', () => {
-    const state = { value: 3 };
-
-    expect(incrementCounter(state, 2)).toEqual({ value: 5 });
-    expect(state).toEqual({ value: 3 });
+describe('isValidRecipe', () => {
+  it('rejects zero-duration recipes', () => {
+    expect(
+      isValidRecipe({
+        id: 'invalid',
+        input: { kind: 'ore', quantity: 1 },
+        output: { kind: 'plate', quantity: 1 },
+        durationTicks: 0,
+      }),
+    ).toBe(false);
   });
 });

@@ -68,7 +68,11 @@ importers:
 
   packages/canvas: {}
 
-  packages/content: {}
+  packages/content:
+    dependencies:
+      '@dstl/domain':
+        specifier: workspace:*
+        version: link:../domain
 
   packages/domain: {}
 
