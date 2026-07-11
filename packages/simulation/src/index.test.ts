@@ -11,9 +11,15 @@ import {
   serializeSnapshot,
   selectStatistics,
   sortQueue,
+  mazeProducer,
 } from '@dstl/simulation';
 
 describe('deterministic primitives', () => {
+  it('keeps the advanced producer replayable and headless', () => {
+    expect(mazeProducer.produce({ seed: 8, tick: 12 })).toEqual(
+      mazeProducer.produce({ seed: 8, tick: 12 }),
+    );
+  });
   it('replays seeded random values and sorts events stably', () => {
     const state = createGameState(1234);
     expect(nextRandom(state)).toEqual(nextRandom(state));

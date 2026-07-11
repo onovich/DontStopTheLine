@@ -25,3 +25,9 @@ export {
   type FactoryStatistics,
   type NodeSummary,
 } from './selectors.js';
+export {
+  mazeProducer,
+  type MiniGameInput,
+  type MiniGameProducer,
+  type MiniGameResult,
+} from './minigame.js';
