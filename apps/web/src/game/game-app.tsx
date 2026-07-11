@@ -19,6 +19,7 @@ interface BuildOption {
 }
 const BUILDABLE: readonly BuildOption[] = [
   { kind: 'source', label: 'Place ore source' },
+  { kind: 'advanced-producer', label: 'Place maze producer' },
   { kind: 'source', label: 'Place coal source', outputKind: 'coal' },
   { kind: 'processor', label: 'Place processor' },
   { kind: 'processor', label: 'Place gear assembler', recipeId: 'assemble-gear' },
