@@ -25,6 +25,7 @@ export interface NodeState {
   readonly input: readonly ItemKind[];
   readonly output: readonly ItemKind[];
   readonly reserved: number;
+  readonly workItem: ItemKind | null;
   readonly workUntil: number | null;
 }
 export interface LineState {
@@ -56,6 +57,7 @@ export function applyCommand(state: FactoryState, command: Command): CommandResu
       input: [],
       output: [],
       reserved: 0,
+      workItem: null,
       workUntil: null,
     };
     return accept({ ...state, nodes: { ...state.nodes, [node.id]: node } }, [
@@ -78,44 +80,13 @@ export function applyCommand(state: FactoryState, command: Command): CommandResu
   if (command.type !== 'advance-ticks') return reject(state, command, 'INVALID_COMMAND');
   if (!Number.isInteger(command.ticks) || command.ticks < 1)
     return reject(state, command, 'INVALID_TICK_COUNT');
-  let next: FactoryState = { ...state, tick: state.tick + command.ticks };
+  let next = state;
   const events: DomainEvent[] = [];
-  const received = receiveArrivals(next);
-  next = received[0];
-  events.push(...received[1]);
-  for (const node of Object.values(next.nodes)) {
-    if (node.kind !== 'source' || productionStatus(node) !== null) continue;
-    const output: readonly ItemKind[] = [...node.output, 'ore'];
-    next = { ...next, nodes: { ...next.nodes, [node.id]: { ...node, output } } };
-    events.push({ type: 'production-completed', nodeId: node.id, item: 'ore' });
+  for (let index = 0; index < command.ticks; index += 1) {
+    const tickResult = advanceOneTick(next);
+    next = tickResult[0];
+    events.push(...tickResult[1]);
   }
-  for (const node of Object.values(next.nodes)) {
-    if (
-      node.kind === 'processor' &&
-      node.input[0] === 'ore' &&
-      node.output.length < OUTPUT_CAPACITY
-    ) {
-      next = {
-        ...next,
-        nodes: {
-          ...next.nodes,
-          [node.id]: { ...node, input: node.input.slice(1), output: [...node.output, 'plate'] },
-        },
-      };
-      events.push({ type: 'production-completed', nodeId: node.id, item: 'plate' });
-    }
-    if (node.kind === 'seller' && node.input[0] === 'plate') {
-      next = {
-        ...next,
-        money: next.money + 1,
-        nodes: { ...next.nodes, [node.id]: { ...node, input: node.input.slice(1) } },
-      };
-      events.push({ type: 'item-sold', nodeId: node.id, amount: 1 });
-    }
-  }
-  const dispatched = dispatchOutputs(next);
-  next = dispatched[0];
-  events.push(...dispatched[1]);
   return accept(next, events);
 }
 
@@ -187,6 +158,76 @@ function receiveArrivals(state: FactoryState): readonly [FactoryState, readonly 
       nextEvents.push({ type: 'item-arrived', lineId: line.id, item: transit.item });
     }
   return [next, nextEvents];
+}
+
+function advanceOneTick(state: FactoryState): readonly [FactoryState, readonly DomainEvent[]] {
+  let next: FactoryState = { ...state, tick: state.tick + 1 };
+  const events: DomainEvent[] = [];
+  const received = receiveArrivals(next);
+  next = received[0];
+  events.push(...received[1]);
+  for (const node of Object.values(next.nodes)) {
+    if (node.workUntil !== null && node.workUntil <= next.tick && node.workItem !== null) {
+      if (node.kind === 'seller') {
+        next = {
+          ...next,
+          money: next.money + 1,
+          nodes: { ...next.nodes, [node.id]: { ...node, workItem: null, workUntil: null } },
+        };
+        events.push({ type: 'item-sold', nodeId: node.id, amount: 1 });
+      } else {
+        next = {
+          ...next,
+          nodes: {
+            ...next.nodes,
+            [node.id]: {
+              ...node,
+              output: [...node.output, node.workItem],
+              workItem: null,
+              workUntil: null,
+            },
+          },
+        };
+        events.push({ type: 'production-completed', nodeId: node.id, item: node.workItem });
+      }
+      continue;
+    }
+    if (node.workUntil !== null) continue;
+    if (node.kind === 'storage' && node.input.length > 0 && node.output.length < OUTPUT_CAPACITY) {
+      const item = node.input[0];
+      if (item === undefined) continue;
+      next = {
+        ...next,
+        nodes: {
+          ...next.nodes,
+          [node.id]: { ...node, input: node.input.slice(1), output: [...node.output, item] },
+        },
+      };
+      continue;
+    }
+    const produced =
+      node.kind === 'source'
+        ? 'ore'
+        : node.kind === 'processor' && node.input[0] === 'ore'
+          ? 'plate'
+          : node.kind === 'seller' && node.input[0] === 'plate'
+            ? 'plate'
+            : null;
+    if (produced !== null && (node.kind === 'seller' || node.output.length < OUTPUT_CAPACITY)) {
+      const input = node.kind === 'source' ? node.input : node.input.slice(1);
+      next = {
+        ...next,
+        nodes: {
+          ...next.nodes,
+          [node.id]: { ...node, input, workItem: produced, workUntil: next.tick + 1 },
+        },
+      };
+    }
+  }
+  const dispatched = dispatchOutputs(next);
+  next = dispatched[0];
+  events.push(...dispatched[1]);
+  return [next, events];
 }
 
 function dispatchOutputs(state: FactoryState): readonly [FactoryState, readonly DomainEvent[]] {

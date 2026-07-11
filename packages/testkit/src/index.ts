@@ -12,6 +12,8 @@ export function profitChainCommands(): readonly Command[] {
     { type: 'advance-ticks', ticks: 1 },
     { type: 'advance-ticks', ticks: 1 },
     { type: 'advance-ticks', ticks: 1 },
+    { type: 'advance-ticks', ticks: 1 },
+    { type: 'advance-ticks', ticks: 1 },
   ];
 }
 

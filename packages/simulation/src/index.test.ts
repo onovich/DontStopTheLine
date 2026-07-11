@@ -43,6 +43,7 @@ describe('deterministic primitives', () => {
       { type: 'place-node', nodeId: 'storage', nodeKind: 'storage' as const },
       { type: 'connect-line', lineId: 'line', from: 'source', to: 'storage' },
       { type: 'advance-ticks', ticks: 1 },
+      { type: 'advance-ticks', ticks: 1 },
     ];
     for (const command of commands) {
       const result = applyCommand(state, command);
@@ -52,7 +53,7 @@ describe('deterministic primitives', () => {
     expect(state.nodes['storage']?.reserved).toBe(1);
     const arrived = applyCommand(state, { type: 'advance-ticks', ticks: 1 });
     if (!arrived.accepted) throw new Error('Expected arrival tick.');
-    expect(arrived.state.nodes['storage']?.input).toEqual(['ore']);
+    expect(arrived.state.nodes['storage']?.output).toEqual(['ore']);
   });
 
   it('exposes read-only aggregate statistics', () => {
