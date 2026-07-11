@@ -8,6 +8,7 @@ import type {
   RoutingStrategy,
 } from '@dstl/domain';
 import { createGameState, type CommandResult, type GameState } from './core.js';
+import { mazeProducer } from './minigame.js';
 
 export type BlockReason =
   | 'NO_INPUT'
@@ -281,6 +282,11 @@ function advanceOneTick(state: FactoryState): readonly [FactoryState, readonly D
       next = startWork(next, current, current.outputKind, 1);
       continue;
     }
+    if (current.kind === 'advanced-producer' && current.output.length < outputCapacity(current)) {
+      const result = mazeProducer.produce({ seed: next.seed, tick: next.tick });
+      next = startWork(next, current, result.item, 1);
+      continue;
+    }
     if (current.kind === 'processor') {
       const recipe = recipeFor(current);
       if (
@@ -456,7 +462,8 @@ function outputCapacity(node: NodeState): number {
   return baseCapacity(node, 'output') * node.level;
 }
 function baseCapacity(node: NodeState, direction: 'input' | 'output'): number {
-  if (node.kind === 'source') return direction === 'output' ? 2 : 0;
+  if (node.kind === 'source' || node.kind === 'advanced-producer')
+    return direction === 'output' ? 2 : 0;
   if (node.kind === 'seller') return direction === 'input' ? 2 : 0;
   if (node.kind === 'warehouse') return 8;
   if (node.kind === 'storage' || node.kind === 'router') return 4;

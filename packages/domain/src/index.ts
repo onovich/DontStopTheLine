@@ -1,6 +1,7 @@
 export type EntityId = string;
 export type ItemKind = 'ore' | 'coal' | 'plate' | 'gear';
-export type NodeKind = 'source' | 'processor' | 'storage' | 'warehouse' | 'router' | 'seller';
+export type NodeKind =
+  'source' | 'advanced-producer' | 'processor' | 'storage' | 'warehouse' | 'router' | 'seller';
 
 export interface ItemStack {
   readonly kind: ItemKind;

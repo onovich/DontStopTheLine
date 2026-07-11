@@ -20,6 +20,16 @@ describe('deterministic primitives', () => {
       mazeProducer.produce({ seed: 8, tick: 12 }),
     );
   });
+  it('uses the maze producer as a deterministic advanced source', () => {
+    let state = createFactory(8);
+    state = applyCommand(state, {
+      type: 'place-node',
+      nodeId: 'maze',
+      nodeKind: 'advanced-producer',
+    }).state;
+    state = applyCommand(state, { type: 'advance-ticks', ticks: 2 }).state;
+    expect(state.nodes['maze']?.output).toEqual(['coal']);
+  });
   it('replays seeded random values and sorts events stably', () => {
     const state = createGameState(1234);
     expect(nextRandom(state)).toEqual(nextRandom(state));

@@ -27,6 +27,7 @@ export function recipeInputs(recipe: Recipe): readonly Recipe['output'][] {
 
 export const starterNodes: readonly NodeDefinition[] = [
   { kind: 'source', inputCapacity: 0, outputCapacity: 2, workCapacity: 0 },
+  { kind: 'advanced-producer', inputCapacity: 0, outputCapacity: 2, workCapacity: 1 },
   { kind: 'processor', inputCapacity: 2, outputCapacity: 2, workCapacity: 1 },
   { kind: 'storage', inputCapacity: 4, outputCapacity: 4, workCapacity: 0 },
   { kind: 'warehouse', inputCapacity: 8, outputCapacity: 8, workCapacity: 0 },
