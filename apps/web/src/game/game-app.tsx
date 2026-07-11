@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { explainBlock, selectNode, type BlockReason } from '@dstl/simulation';
-import type { NodeKind } from '@dstl/domain';
+import type { ItemKind, NodeKind, RoutingStrategy } from '@dstl/domain';
 import { Board } from './board.js';
 import {
   createGameSession,
@@ -11,7 +11,22 @@ import {
 } from './session.js';
 
 const GOALS = [10, 30, 50] as const;
-const BUILDABLE: readonly NodeKind[] = ['processor', 'storage', 'seller'];
+interface BuildOption {
+  readonly kind: NodeKind;
+  readonly label: string;
+  readonly outputKind?: ItemKind;
+  readonly recipeId?: string;
+}
+const BUILDABLE: readonly BuildOption[] = [
+  { kind: 'source', label: 'Place ore source' },
+  { kind: 'source', label: 'Place coal source', outputKind: 'coal' },
+  { kind: 'processor', label: 'Place processor' },
+  { kind: 'processor', label: 'Place gear assembler', recipeId: 'assemble-gear' },
+  { kind: 'storage', label: 'Place storage' },
+  { kind: 'warehouse', label: 'Place warehouse' },
+  { kind: 'router', label: 'Place router' },
+  { kind: 'seller', label: 'Place seller' },
+];
 
 export function GameApp() {
   const sessionRef = useRef<GameSession | null>(null);
@@ -22,12 +37,15 @@ export function GameApp() {
     session.getSnapshot,
     session.getSnapshot,
   );
-  const [buildKind, setBuildKind] = useState<NodeKind>('processor');
+  const [buildOption, setBuildOption] = useState<BuildOption>(
+    BUILDABLE[2] ?? { kind: 'processor', label: 'Place processor' },
+  );
+  const [wideLine, setWideLine] = useState(false);
   const [connectFrom, setConnectFrom] = useState<string | null>(null);
   useAnimationFrame(session);
 
-  const chooseBuild = (kind: NodeKind): void => {
-    setBuildKind(kind);
+  const chooseBuild = (option: BuildOption): void => {
+    setBuildOption(option);
     setConnectFrom(null);
     session.setMode('place');
   };
@@ -36,10 +54,10 @@ export function GameApp() {
     session.setMode(mode);
   };
   const place = (position: Point): void => {
-    session.placeNode(buildKind, position);
+    session.placeNode(buildOption.kind, position, buildOption.outputKind, buildOption.recipeId);
   };
   const connect = (from: string, to: string): boolean => {
-    const connected = session.connect(from, to);
+    const connected = session.connect(from, to, wideLine ? 3 : 1);
     setConnectFrom(null);
     session.setMode('select');
     return connected;
@@ -76,14 +94,16 @@ export function GameApp() {
       </header>
       <aside aria-label="Build drawer" className="build-drawer">
         <h2>Build</h2>
-        {BUILDABLE.map((kind) => (
+        {BUILDABLE.map((option) => (
           <button
-            className={snapshot.ui.mode === 'place' && buildKind === kind ? 'active' : ''}
-            key={kind}
-            onClick={() => chooseBuild(kind)}
+            className={
+              snapshot.ui.mode === 'place' && buildOption.label === option.label ? 'active' : ''
+            }
+            key={option.label}
+            onClick={() => chooseBuild(option)}
             type="button"
           >
-            Place {kind}
+            {option.label}
           </button>
         ))}
         <p>Choose a module, then click a free grid cell.</p>
@@ -149,6 +169,14 @@ export function GameApp() {
           Connect
         </button>
         <button
+          aria-pressed={wideLine}
+          className={wideLine ? 'active' : ''}
+          onClick={() => setWideLine(!wideLine)}
+          type="button"
+        >
+          Wide line
+        </button>
+        <button
           className={snapshot.ui.mode === 'demolish' ? 'active danger' : 'danger'}
           onClick={() => chooseMode('demolish')}
           type="button"
@@ -162,11 +190,47 @@ export function GameApp() {
         >
           Undo
         </button>
+        {selectedNodeId === null ? null : (
+          <StrategyControls
+            nodeId={selectedNodeId}
+            onRoute={session.setRouting}
+            onSell={session.sellNode}
+            onUpgrade={session.upgradeNode}
+          />
+        )}
         <span>
           {connectFrom === null ? 'Select a mode.' : `Connect ${connectFrom} to a target.`}
         </span>
       </nav>
     </main>
+  );
+}
+
+function StrategyControls({
+  nodeId,
+  onRoute,
+  onSell,
+  onUpgrade,
+}: {
+  readonly nodeId: string;
+  readonly onRoute: (id: string, strategy: RoutingStrategy) => boolean;
+  readonly onSell: (id: string) => boolean;
+  readonly onUpgrade: (id: string) => boolean;
+}) {
+  return (
+    <>
+      <button onClick={() => onUpgrade(nodeId)} type="button">
+        Upgrade
+      </button>
+      <button onClick={() => onSell(nodeId)} type="button">
+        Sell / refund
+      </button>
+      {(['overflow', 'priority', 'even'] as const).map((strategy) => (
+        <button key={strategy} onClick={() => onRoute(nodeId, strategy)} type="button">
+          Route {strategy}
+        </button>
+      ))}
+    </>
   );
 }
 

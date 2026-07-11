@@ -1,4 +1,4 @@
-import type { Command, EntityId, NodeKind } from '@dstl/domain';
+import type { Command, EntityId, ItemKind, NodeKind, RoutingStrategy } from '@dstl/domain';
 import {
   applyCommand,
   createFactory,
@@ -44,15 +44,23 @@ interface SessionState {
 
 export interface GameSession {
   advanceFrame(elapsedMs: number): void;
-  connect(from: EntityId, to: EntityId): boolean;
+  connect(from: EntityId, to: EntityId, capacity?: number): boolean;
   getSnapshot(): GameSnapshot;
   moveNode(nodeId: EntityId, position: Point): boolean;
-  placeNode(kind: NodeKind, position: Point): EntityId | null;
+  placeNode(
+    kind: NodeKind,
+    position: Point,
+    outputKind?: ItemKind,
+    recipeId?: string,
+  ): EntityId | null;
   removeNode(nodeId: EntityId): boolean;
   setMode(mode: InteractionMode): void;
   setPaused(paused: boolean): void;
   setSelectedNode(nodeId: EntityId | null): void;
+  setRouting(nodeId: EntityId, strategy: RoutingStrategy): boolean;
   setSpeed(speed: SimulationSpeed): void;
+  upgradeNode(nodeId: EntityId): boolean;
+  sellNode(nodeId: EntityId): boolean;
   subscribe(listener: () => void): () => void;
   undo(): boolean;
 }
@@ -101,10 +109,8 @@ export function createGameSession(seed = 1): GameSession {
         state = { ...state, accumulatorMs };
       }
     },
-    connect(from, to) {
-      if (Object.values(state.factory.lines).some((line) => line.from === from || line.to === to))
-        return false;
-      return apply({ type: 'connect-line', lineId: nextLineId(), from, to });
+    connect(from, to, capacity = 1) {
+      return apply({ type: 'connect-line', lineId: nextLineId(), from, to, capacity });
     },
     getSnapshot() {
       return {
@@ -125,13 +131,22 @@ export function createGameSession(seed = 1): GameSession {
       publish();
       return true;
     },
-    placeNode(kind, position) {
+    placeNode(kind, position, outputKind, recipeId) {
       const nodeId = nextNodeId(kind);
       const positions = { ...state.ui.positions, [nodeId]: position };
-      const placed = apply(
-        { type: 'place-node', nodeId, nodeKind: kind },
-        { ...state.ui, mode: 'select', positions, selectedNodeId: nodeId },
-      );
+      const command: Command = {
+        type: 'place-node',
+        nodeId,
+        nodeKind: kind,
+        ...(outputKind === undefined ? {} : { outputKind }),
+        ...(recipeId === undefined ? {} : { recipeId }),
+      };
+      const placed = apply(command, {
+        ...state.ui,
+        mode: 'select',
+        positions,
+        selectedNodeId: nodeId,
+      });
       return placed ? nodeId : null;
     },
     removeNode(nodeId) {
@@ -158,10 +173,19 @@ export function createGameSession(seed = 1): GameSession {
       state = { ...state, ui: { ...state.ui, selectedNodeId } };
       publish();
     },
+    setRouting(nodeId, strategy) {
+      return apply({ type: 'set-routing', nodeId, strategy });
+    },
     setSpeed(speed) {
       if (!SPEEDS.includes(speed) || speed === state.speed) return;
       state = { ...state, speed };
       publish();
+    },
+    upgradeNode(nodeId) {
+      return apply({ type: 'upgrade-node', nodeId });
+    },
+    sellNode(nodeId) {
+      return apply({ type: 'sell-node', nodeId });
     },
     subscribe(listener) {
       listeners.add(listener);
