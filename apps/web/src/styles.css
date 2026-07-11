@@ -1,0 +1,51 @@
+:root {
+  color: #dce7e6;
+  background: #101819;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.phase-zero-shell {
+  display: grid;
+  min-height: 100vh;
+  place-content: center;
+  padding: 2rem;
+  background: radial-gradient(circle at top, #1e3734, transparent 50%), #101819;
+}
+
+.eyebrow {
+  color: #7ecdc3;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+h1,
+.chinese-title,
+.status {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  letter-spacing: -0.06em;
+}
+
+.chinese-title {
+  color: #f5c977;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  margin-top: 0.35rem;
+}
+
+.status {
+  color: #a5b7b5;
+  margin-top: 1.5rem;
+}

@@ -1,0 +1,1 @@
+export type PlatformPackageMarker = 'platform';
