@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "initializedMarker": "codex-project-ops-workflow: initialized",
+  "projectName": "DontStopTheLine",
+  "repoRoot": "D:/WebProjects/DontStopTheLine",
+  "validateSequence": ["lint", "typecheck", "build", "test", "structureCheck", "docsCheck"],
+  "operations": {
+    "envCheck": { "commands": ["node --version", "pnpm --version"] },
+    "restoreDeps": { "commands": ["pnpm install --frozen-lockfile"] },
+    "installDeps": { "commands": ["pnpm install"] },
+    "build": { "commands": ["pnpm build"] },
+    "test": { "commands": ["pnpm test"] },
+    "lint": { "commands": ["pnpm lint", "pnpm format:check"] },
+    "format": { "commands": ["pnpm exec prettier --write ."] },
+    "typecheck": { "commands": ["pnpm typecheck"] },
+    "structureCheck": { "commands": ["pnpm arch:check"] },
+    "codegen": { "commands": [] },
+    "docsCheck": { "commands": ["git diff --check"] },
+    "smoke": { "urls": [], "commands": [] },
+    "package": { "commands": ["pnpm build"] },
+    "releaseDryRun": { "commands": ["pnpm check", "pnpm build"] }
+  },
+  "devServer": {
+    "startCommand": "pnpm --filter @dstl/web dev",
+    "healthUrl": "http://localhost:5173",
+    "readyText": "Local:",
+    "startupTimeoutSeconds": 30,
+    "pidFile": ".codex/project-ops-devserver.pid"
+  },
+  "forbiddenPolicy": "Do not run destructive clean/reset/deploy commands unless the user explicitly asks."
+}

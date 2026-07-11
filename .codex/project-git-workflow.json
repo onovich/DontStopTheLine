@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "initializedMarker": "codex-project-git-workflow: initialized",
+  "projectName": "DontStopTheLine",
+  "repoRoot": "D:/WebProjects/DontStopTheLine",
+  "safeDirectory": "D:/WebProjects/DontStopTheLine",
+  "statusCommand": "git -c safe.directory=D:/WebProjects/DontStopTheLine status --short --branch",
+  "validationCommands": ["pnpm check"],
+  "stagingPolicy": "ask each time",
+  "commitCommand": "",
+  "pushCommand": "git -c safe.directory=D:/WebProjects/DontStopTheLine push -u origin HEAD",
+  "docsRequirement": "Architecture-affecting changes require an ADR.",
+  "forbiddenCommands": "force-push, reset --hard, clean -fd"
+}
