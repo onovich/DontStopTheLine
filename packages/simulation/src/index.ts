@@ -27,6 +27,9 @@ export {
 } from './selectors.js';
 export {
   mazeProducer,
+  solveMaze,
+  type MazeCell,
+  type MazeSolution,
   type MiniGameInput,
   type MiniGameProducer,
   type MiniGameResult,
