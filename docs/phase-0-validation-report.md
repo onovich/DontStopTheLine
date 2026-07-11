@@ -45,6 +45,14 @@
 - Exact repair validation: `CI=true pnpm install --frozen-lockfile`, `pnpm check`,
   `pnpm build`, `pnpm smoke`, and `git diff --check` all passed.
 
+## esbuild approval repair
+
+- Repair commit: `6574385772311dc995585588d99c7063541fa70b`
+- Kept the explicit pnpm build-script allowlist and changed `allowBuilds.esbuild` from a
+  placeholder string to the boolean `true`.
+- Exact repair validation: `CI=true pnpm install --frozen-lockfile`, `pnpm check`,
+  `pnpm build`, `pnpm smoke`, and `git diff --check` all passed.
+
 ## pnpm workspace-config repair
 
 - Repair commit: `6cf5d4a106c250e0c91fb2f95116bd90b11ee31f`
