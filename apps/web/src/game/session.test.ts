@@ -34,4 +34,16 @@ describe('game session', () => {
     expect(session.undo()).toBe(true);
     expect(session.getSnapshot().factory.nodes['processor-3']).toBeUndefined();
   });
+
+  it('reaches every P0 sales goal through commands and fixed simulation steps', () => {
+    const session = createGameSession();
+    const processorId = session.placeNode('processor', { x: 480, y: 360 });
+
+    expect(processorId).toBe('processor-3');
+    expect(session.connect('source-1', processorId ?? '')).toBe(true);
+    expect(session.connect(processorId ?? '', 'seller-2')).toBe(true);
+
+    session.advanceFrame(LOGIC_TICK_MS * 140);
+    expect(session.getSnapshot().statistics.money).toBeGreaterThanOrEqual(50);
+  });
 });

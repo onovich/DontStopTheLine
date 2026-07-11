@@ -7,7 +7,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: 'pnpm --filter @dstl/web exec vite --host 127.0.0.1 --port 4173',
+    command: 'pnpm --filter @dstl/web run dev -- --host 127.0.0.1 --port 4173',
     port: 4173,
     reuseExistingServer: !process.env.CI,
   },
