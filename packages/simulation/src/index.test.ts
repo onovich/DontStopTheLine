@@ -6,6 +6,7 @@ import {
   createGameState,
   nextRandom,
   productionStatus,
+  selectStatistics,
   sortQueue,
 } from '@dstl/simulation';
 
@@ -49,5 +50,16 @@ describe('deterministic primitives', () => {
     const arrived = applyCommand(state, { type: 'advance-ticks', ticks: 1 });
     if (!arrived.accepted) throw new Error('Expected arrival tick.');
     expect(arrived.state.nodes['storage']?.input).toEqual(['ore']);
+  });
+
+  it('exposes read-only aggregate statistics', () => {
+    const state = createFactory(7);
+    expect(selectStatistics(state)).toEqual({
+      inTransit: 0,
+      money: 0,
+      nodeCount: 0,
+      stored: { ore: 0, plate: 0 },
+      tick: 0,
+    });
   });
 });

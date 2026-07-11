@@ -14,3 +14,10 @@ export {
   type FactoryState,
   type NodeState,
 } from './engine.js';
+export {
+  explainBlock,
+  selectNode,
+  selectStatistics,
+  type FactoryStatistics,
+  type NodeSummary,
+} from './selectors.js';
