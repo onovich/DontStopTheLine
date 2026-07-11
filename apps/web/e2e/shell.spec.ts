@@ -40,6 +40,8 @@ test('exposes the P1 strategy build and routing controls', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'Place coal source' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Place maze producer' })).toBeVisible();
+  await expect(page.getByText('Chapter 1 · First maze line')).toBeVisible();
+  await page.getByLabel('Reduce motion').check();
   await expect(page.getByRole('button', { name: 'Place gear assembler' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Place warehouse' })).toBeVisible();
   await page.getByRole('button', { name: 'Wide line' }).click();

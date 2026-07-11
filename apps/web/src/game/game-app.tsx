@@ -42,6 +42,7 @@ export function GameApp() {
     BUILDABLE[2] ?? { kind: 'processor', label: 'Place processor' },
   );
   const [wideLine, setWideLine] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [connectFrom, setConnectFrom] = useState<string | null>(null);
   useAnimationFrame(session);
 
@@ -81,7 +82,7 @@ export function GameApp() {
     selectedNodeId === null ? undefined : snapshot.factory.nodes[selectedNodeId];
 
   return (
-    <main className="game-shell">
+    <main className={reducedMotion ? 'game-shell reduced-motion' : 'game-shell'}>
       <header className="top-bar">
         <div>
           <p className="eyebrow">PLAYABLE P0 · DETERMINISTIC FACTORY</p>
@@ -92,7 +93,21 @@ export function GameApp() {
           <small>next goal {nextGoal}</small>
         </div>
         <GoalProgress money={snapshot.statistics.money} />
+        <label className="motion-setting">
+          <input
+            checked={reducedMotion}
+            onChange={(event) => setReducedMotion(event.target.checked)}
+            type="checkbox"
+          />
+          Reduce motion
+        </label>
       </header>
+      <aside aria-label="Chapter tutorial" className="chapter-tutorial">
+        <strong>Chapter 1 · First maze line</strong>
+        <p>
+          Place a maze producer, connect it to a processor, then observe its deterministic output.
+        </p>
+      </aside>
       <aside aria-label="Build drawer" className="build-drawer">
         <h2>Build</h2>
         {BUILDABLE.map((option) => (
