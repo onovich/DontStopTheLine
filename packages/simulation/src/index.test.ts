@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { Command } from '@dstl/domain';
 import {
   applyCommand,
   createFactory,
@@ -29,5 +30,24 @@ describe('deterministic primitives', () => {
       expect(productionStatus(processor)).toBe('NO_INPUT');
       expect(initial.nodes).toEqual({});
     }
+  });
+
+  it('reserves a target before dispatching and arrives on the next tick', () => {
+    let state = createFactory(1);
+    const commands: readonly Command[] = [
+      { type: 'place-node', nodeId: 'source', nodeKind: 'source' as const },
+      { type: 'place-node', nodeId: 'processor', nodeKind: 'processor' as const },
+      { type: 'connect-line', lineId: 'line', from: 'source', to: 'processor' },
+      { type: 'advance-ticks', ticks: 1 },
+    ];
+    for (const command of commands) {
+      const result = applyCommand(state, command);
+      if (!result.accepted) throw new Error('Expected accepted command.');
+      state = result.state;
+    }
+    expect(state.nodes['processor']?.reserved).toBe(1);
+    const arrived = applyCommand(state, { type: 'advance-ticks', ticks: 1 });
+    if (!arrived.accepted) throw new Error('Expected arrival tick.');
+    expect(arrived.state.nodes['processor']?.input).toEqual(['ore']);
   });
 });
