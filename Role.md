@@ -17,10 +17,10 @@ executor:
   evidence: current active 程序开发执行者 thread in the same workspace.
 
 idempotency:
-  active_goal_guide: docs/phase-2-goal-mode-execution-guide.md
-  active_goal_phase: Phase 2 可玩 P0
+  active_goal_guide: docs/phase-3-goal-mode-execution-guide.md
+  active_goal_phase: Phase 3 策略 Demo P1
   last_planner_dispatch: 2026-07-11T16:00:00+08:00
   last_planner_dispatch_status: ready
-  last_planner_dispatch_guide: docs/phase-2-goal-mode-execution-guide.md
-  last_executor_report_commit: 42e091309acaf66d7a51c94ea0ac3b970c062f2d
+  last_planner_dispatch_guide: docs/phase-3-goal-mode-execution-guide.md
+  last_executor_report_commit: f22c289
   last_check_status: pass
