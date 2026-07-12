@@ -23,7 +23,7 @@ idempotency:
   last_planner_dispatch_status: sent
   last_planner_dispatch_guide: docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md
   last_planner_dispatch_commit: f605f67c07961561a93b96e94fdb2f199a9ce72b
-  last_executor_report_commit: a1be5d8
+  last_executor_report_commit: a5e9d64
   last_executor_report_status: ready_for_check
   last_executor_report_guide: docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md
   last_executor_report_at: 2026-07-13T03:10:00+08:00
