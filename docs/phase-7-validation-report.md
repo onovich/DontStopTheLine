@@ -12,7 +12,7 @@
 ## 视觉与响应式证据
 
 - before：`artifacts/visual/phase-7-before-verified-*`。
-- after：`artifacts/visual/phase-7-responsive-repair-*`，覆盖 1440×900、1024×768、768×1024、390×844、320×568 和移动端抽屉打开状态。
+- after：`artifacts/visual/phase-7-buffer-responsive-*`，覆盖 1440×900、1024×768、768×1024、390×844、320×568 和移动端抽屉打开状态。
 - 工厂画布是首屏主体；空检查器不占用布局宽度；移动端使用紧凑“产线别停 / DSTL”锁定字标。
 - 390 与 320 视觉测试断言页面无横向溢出，HUD、设置、端点设备和工厂画布的边界均在视口内。
 

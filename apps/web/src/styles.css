@@ -155,9 +155,13 @@ button:disabled {
   align-items: center;
   color: var(--ink-muted);
   display: inline-flex;
-  font-size: 0.72rem;
-  gap: var(--space-1);
-  white-space: nowrap;
+  font-size: 1rem;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+.hud-motion input {
+  margin: 0;
 }
 
 .build-drawer,
@@ -355,6 +359,13 @@ button:disabled {
 .node-port:focus-visible,
 .node-port[aria-pressed='true'] {
   color: var(--surface-deck);
+}
+.node-port.is-tutorial-target::before {
+  box-shadow: 0 0 0 4px var(--signal-amber);
+}
+.build-drawer-toggle.is-tutorial-target {
+  border-color: var(--signal-amber);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--signal-amber) 30%, transparent);
 }
 .placement-ghost {
   background: color-mix(in srgb, var(--signal-flow) 18%, var(--surface-module));
@@ -576,8 +587,6 @@ button:disabled {
   }
   .hud-motion {
     margin-left: auto;
-    overflow: hidden;
-    width: 2rem;
   }
   .brand-full {
     display: none;
@@ -642,13 +651,19 @@ button:disabled {
   .control-bar {
     grid-column: 1;
     grid-row: 4;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    overflow-x: hidden;
+  }
+  .control-bar button {
+    min-width: 0;
+    padding: var(--space-2);
+    white-space: nowrap;
   }
   .build-drawer-toggle {
     order: -1;
   }
   .control-bar span {
+    flex-basis: 100%;
     margin-left: 0;
     width: 100%;
   }

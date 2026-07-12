@@ -56,13 +56,13 @@ export function GameHud({
             {option}×
           </button>
         ))}
-        <label className="hud-motion">
+        <label aria-label="减少动画" className="hud-motion" title="减少动画">
           <input
             checked={reducedMotion}
             onChange={(event) => onReducedMotionChange(event.target.checked)}
             type="checkbox"
           />
-          减少动画
+          <span aria-hidden="true">⚙</span>
         </label>
       </div>
     </header>

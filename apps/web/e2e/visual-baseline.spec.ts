@@ -34,7 +34,7 @@ test.describe('Phase 7 verified visual baseline', () => {
           page.getByRole('button', { name: '1×' }),
           page.getByRole('button', { name: '2×' }),
           page.getByRole('button', { name: '4×' }),
-          page.getByLabel('减少动画'),
+          page.locator('.hud-motion'),
           page.getByRole('application', { name: 'Factory board' }),
           page.getByRole('button', { exact: true, name: '原料源' }),
           page.getByRole('button', { exact: true, name: '售卖站' }),
@@ -55,7 +55,7 @@ test.describe('Phase 7 verified visual baseline', () => {
   test('captures the mobile build sheet and Escape close path', async ({ page }) => {
     await page.setViewportSize({ height: 844, width: 390 });
     await page.goto('/');
-    await page.getByRole('button', { name: '建造设备' }).click();
+    await page.getByRole('button', { name: '建造' }).click();
     await expect(page.getByRole('dialog', { name: '建造目录' })).toBeVisible();
     await expect(page.getByRole('button', { name: '铁矿源' })).toBeVisible();
     await expect(page.getByText(/解锁预告：\$10/)).toBeVisible();
@@ -64,6 +64,6 @@ test.describe('Phase 7 verified visual baseline', () => {
     });
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog', { name: '建造目录' })).not.toBeVisible();
-    await expect(page.getByRole('button', { name: '建造设备' })).toBeFocused();
+    await expect(page.getByRole('button', { name: '建造' })).toBeFocused();
   });
 });

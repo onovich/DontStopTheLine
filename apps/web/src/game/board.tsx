@@ -39,6 +39,7 @@ interface BoardProps {
   readonly onPlace: (position: Point) => void;
   readonly onSelect: (nodeId: string) => void;
   readonly placementLabel: string;
+  readonly tutorialStage: string;
 }
 
 export function Board({
@@ -51,6 +52,7 @@ export function Board({
   onPlace,
   onSelect,
   placementLabel,
+  tutorialStage,
   ui,
 }: BoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -201,7 +203,7 @@ export function Board({
               </button>
               <button
                 aria-label={`连接到 ${nodeLabel(node.kind)} 的输入端`}
-                className="node-port node-port-input"
+                className={`node-port node-port-input${isTutorialPort(tutorialStage, node.kind, 'input') ? ' is-tutorial-target' : ''}`}
                 onKeyDown={(event) => {
                   if (event.key !== 'Enter' && event.key !== ' ') return;
                   event.preventDefault();
@@ -219,7 +221,7 @@ export function Board({
               <button
                 aria-label={`从 ${nodeLabel(node.kind)} 的输出端开始连线`}
                 aria-pressed={connectFrom === node.id}
-                className="node-port node-port-output"
+                className={`node-port node-port-output${isTutorialPort(tutorialStage, node.kind, 'output') ? ' is-tutorial-target' : ''}`}
                 onKeyDown={(event) => {
                   if (event.key !== 'Enter' && event.key !== ' ') return;
                   event.preventDefault();
@@ -440,4 +442,14 @@ function nodeIcon(kind: string): string {
     warehouse: '▤',
   };
   return icons[kind] ?? '●';
+}
+function isTutorialPort(stage: string, kind: string, direction: 'input' | 'output'): boolean {
+  return (
+    (stage === 'source-to-processor' &&
+      ((kind === 'source' && direction === 'output') ||
+        (kind === 'processor' && direction === 'input'))) ||
+    (stage === 'processor-to-seller' &&
+      ((kind === 'processor' && direction === 'output') ||
+        (kind === 'seller' && direction === 'input')))
+  );
 }

@@ -202,6 +202,7 @@ export function GameApp() {
           onPlace={place}
           onSelect={select}
           placementLabel={buildOption.label}
+          tutorialStage={tutorial.stage}
           ui={snapshot.ui}
         />
       </section>
@@ -260,12 +261,16 @@ export function GameApp() {
         <button
           aria-expanded={isBuildDrawerOpen}
           aria-controls="build-catalog"
-          className="build-drawer-toggle"
+          className={
+            tutorial.stage === 'build'
+              ? 'build-drawer-toggle is-tutorial-target'
+              : 'build-drawer-toggle'
+          }
           onClick={() => setBuildDrawerOpen((open) => !open)}
           ref={buildToggleRef}
           type="button"
         >
-          建造设备
+          建造
         </button>
         {selectedNodeId === null ? null : (
           <StrategyControls
