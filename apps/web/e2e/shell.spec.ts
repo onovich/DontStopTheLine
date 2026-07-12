@@ -14,12 +14,12 @@ test('builds and connects a profitable P0 chain without console errors', async (
     .click({ position: { x: 470, y: 160 } });
   await expect(page.getByRole('button', { exact: true, name: '加工器' })).toBeVisible();
 
-  await page.getByRole('button', { exact: true, name: '连线' }).click();
-  await page.getByRole('button', { exact: true, name: '原料源' }).click();
-  await page.getByRole('button', { exact: true, name: '加工器' }).click();
-  await page.getByRole('button', { exact: true, name: '连线' }).click();
-  await page.getByRole('button', { exact: true, name: '加工器' }).click();
-  await page.getByRole('button', { exact: true, name: '售卖站' }).click();
+  await page
+    .getByRole('button', { name: '从 原料源 的输出端开始连线' })
+    .dragTo(page.getByRole('button', { name: '连接到 加工器 的输入端' }));
+  await page
+    .getByRole('button', { name: '从 加工器 的输出端开始连线' })
+    .dragTo(page.getByRole('button', { name: '连接到 售卖站 的输入端' }));
 
   await expect(page.locator('.money')).not.toHaveText(/\$ 0/, { timeout: 5000 });
   expect(errors).toEqual([]);
