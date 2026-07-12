@@ -373,6 +373,26 @@ button:disabled {
 .node-icon {
   display: none;
 }
+.node-lamp {
+  align-items: center;
+  color: var(--signal-input);
+  display: inline-flex;
+  font-size: 0.62rem;
+  gap: var(--space-1);
+}
+.node-lamp::before {
+  background: currentColor;
+  border-radius: 50%;
+  content: '';
+  height: 0.45rem;
+  width: 0.45rem;
+}
+.state-working .node-lamp {
+  color: var(--signal-amber);
+}
+.state-flowing .node-lamp {
+  color: var(--signal-flow);
+}
 .node-name,
 .node-buffers {
   font-size: 0.75rem;

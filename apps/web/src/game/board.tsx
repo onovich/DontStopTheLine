@@ -171,9 +171,11 @@ export function Board({
           const position =
             drag?.nodeId === node.id && dragPosition !== null ? dragPosition : savedPosition;
           const selected = ui.selectedNodeId === node.id;
+          const state =
+            node.workItem !== null ? 'working' : node.output.length > 0 ? 'flowing' : 'waiting';
           return (
             <div
-              className={`factory-node kind-${node.kind}${selected ? ' is-selected' : ''}`}
+              className={`factory-node kind-${node.kind} state-${state}${selected ? ' is-selected' : ''}`}
               key={node.id}
               style={{ left: position.x, top: position.y }}
             >
@@ -189,6 +191,9 @@ export function Board({
                   {nodeIcon(node.kind)}
                 </span>
                 <span className="node-kind">{nodeLabel(node.kind)}</span>
+                <span className="node-lamp">
+                  {state === 'working' ? '加工中' : state === 'flowing' ? '可输出' : '待料'}
+                </span>
                 <span className="node-name">{nodeStatus(node)}</span>
                 <span className="node-buffers">
                   输入 {node.input.length + node.reserved} · 输出 {node.output.length}
