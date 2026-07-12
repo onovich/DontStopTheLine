@@ -8,21 +8,26 @@ test('builds and connects a profitable P0 chain without console errors', async (
 
   await page.goto('/');
   await expect(page.getByRole('heading', { name: "Don't Stop The Line" })).toBeVisible();
+  await expect(page.getByText('建造基础加工器')).toBeVisible();
   await page.getByRole('button', { name: '基础加工器' }).click();
   await page
     .getByRole('application', { name: 'Factory board' })
     .click({ position: { x: 470, y: 160 } });
   await expect(page.getByRole('button', { exact: true, name: '加工器' })).toBeVisible();
+  await expect(page.getByText('连接原料到加工器')).toBeVisible();
 
   await page
     .getByRole('button', { name: '从 原料源 的输出端开始连线' })
     .dragTo(page.getByRole('button', { name: '连接到 加工器 的输入端' }));
+  await expect(page.getByText('连接加工器到售卖站')).toBeVisible();
   await page
     .getByRole('button', { name: '从 加工器 的输出端开始连线' })
     .dragTo(page.getByRole('button', { name: '连接到 售卖站 的输入端' }));
   await expect(page.locator('.factory-line')).toHaveCount(2);
+  await expect(page.getByText('等待首件出售')).toBeVisible();
 
   await expect(page.locator('.money')).not.toHaveText(/\$ 0/, { timeout: 5000 });
+  await expect(page.getByText('首线已盈利')).toBeVisible();
   expect(errors).toEqual([]);
 });
 

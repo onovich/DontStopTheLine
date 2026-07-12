@@ -406,6 +406,7 @@ function modulo(value: number, divisor: number): number {
   return ((value % divisor) + divisor) % divisor;
 }
 function initialCamera(viewportWidth: number): Camera {
+  if (viewportWidth <= 360) return { x: 0, y: 0, zoom: 0.33 };
   if (viewportWidth <= 700) return { x: 0, y: 0, zoom: 0.4 };
   if (viewportWidth <= 1100) return { x: 0, y: 0, zoom: 0.5 };
   return { x: 0, y: 0, zoom: 0.8 };

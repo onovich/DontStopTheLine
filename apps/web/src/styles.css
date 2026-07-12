@@ -55,6 +55,7 @@ input:focus-visible {
   grid-template-rows: auto minmax(0, 1fr) auto;
   min-height: 100vh;
   padding: var(--space-4);
+  overflow-x: hidden;
 }
 
 .game-hud {
@@ -557,7 +558,26 @@ button:disabled {
     gap: var(--space-2);
     grid-column: 1;
     grid-row: 1;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
+  }
+  .hud-title {
+    grid-row: 1;
+  }
+  .hud-controls {
+    flex-wrap: nowrap;
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .hud-readouts {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .hud-motion {
+    margin-left: auto;
+    overflow: hidden;
+    width: 2rem;
   }
   .brand-full {
     display: none;
@@ -622,6 +642,11 @@ button:disabled {
   .control-bar {
     grid-column: 1;
     grid-row: 4;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .build-drawer-toggle {
+    order: -1;
   }
   .control-bar span {
     margin-left: 0;
@@ -648,6 +673,19 @@ button:disabled {
   }
   .kind-source .node-icon {
     color: var(--signal-input);
+  }
+}
+@media (max-width: 360px) {
+  .node-port {
+    height: 134px;
+    top: -12px;
+    width: 134px;
+  }
+  .node-port-input {
+    left: -67px;
+  }
+  .node-port-output {
+    right: -67px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

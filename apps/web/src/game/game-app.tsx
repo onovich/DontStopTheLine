@@ -123,6 +123,7 @@ export function GameApp() {
   const unlockedBuildOptions = BUILDABLE.filter((option) =>
     isBuildUnlocked(option, snapshot.statistics.money),
   );
+  const tutorial = tutorialFor(snapshot.factory, snapshot.statistics.money);
 
   return (
     <main className={reducedMotion ? 'game-shell reduced-motion' : 'game-shell'}>
@@ -135,16 +136,9 @@ export function GameApp() {
         reducedMotion={reducedMotion}
         speed={snapshot.speed}
       />
-      <aside
-        aria-label="首局引导"
-        className={connectFrom === null ? 'chapter-tutorial' : 'chapter-tutorial is-connecting'}
-      >
-        <strong>{connectFrom === null ? '先让货物持续出售' : '现在选择接收端'}</strong>
-        <p>
-          {connectFrom === null
-            ? '拖动原料设备的输出端到加工器输入端，再接到售卖站。'
-            : '高亮端口正在等待连接；选择能接收货物的输入端。'}
-        </p>
+      <aside aria-label="首局引导" className={`chapter-tutorial stage-${tutorial.stage}`}>
+        <strong>{tutorial.title}</strong>
+        <p>{connectFrom === null ? tutorial.detail : '连接已开始：选择高亮设备的输入端。'}</p>
       </aside>
       {isBuildDrawerOpen ? (
         <button
@@ -406,6 +400,49 @@ function displayNodeName(kind: NodeKind): string {
     warehouse: '大型仓库',
   };
   return names[kind];
+}
+
+function tutorialFor(
+  factory: {
+    readonly lines: Readonly<Record<string, { readonly from: string; readonly to: string }>>;
+    readonly nodes: Readonly<Record<string, { readonly kind: NodeKind }>>;
+  },
+  money: number,
+): { readonly detail: string; readonly stage: string; readonly title: string } {
+  const nodes = Object.entries(factory.nodes);
+  const processor = nodes.find(([, node]) => node.kind === 'processor')?.[0];
+  const source = nodes.find(([, node]) => node.kind === 'source')?.[0];
+  const seller = nodes.find(([, node]) => node.kind === 'seller')?.[0];
+  if (processor === undefined)
+    return {
+      detail: '打开建造设备，选择基础加工器并放到空白网格。',
+      stage: 'build',
+      title: '建造基础加工器',
+    };
+  const lines = Object.values(factory.lines);
+  if (source === undefined || !lines.some((line) => line.from === source && line.to === processor))
+    return {
+      detail: '从原料源输出端拖到加工器输入端。',
+      stage: 'source-to-processor',
+      title: '连接原料到加工器',
+    };
+  if (seller === undefined || !lines.some((line) => line.from === processor && line.to === seller))
+    return {
+      detail: '从加工器输出端拖到售卖站输入端。',
+      stage: 'processor-to-seller',
+      title: '连接加工器到售卖站',
+    };
+  if (money <= 0)
+    return {
+      detail: '产线正在运行，观察第一件货物出售。',
+      stage: 'watch-sale',
+      title: '等待首件出售',
+    };
+  return {
+    detail: '首条产线已经盈利；缓冲和分流会在需要时解锁。',
+    stage: 'complete',
+    title: '首线已盈利',
+  };
 }
 
 function useAnimationFrame(session: GameSession): void {
