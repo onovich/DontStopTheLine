@@ -135,9 +135,16 @@ export function GameApp() {
         reducedMotion={reducedMotion}
         speed={snapshot.speed}
       />
-      <aside aria-label="Chapter tutorial" className="chapter-tutorial">
-        <strong>先让货物持续出售</strong>
-        <p>从原料设备的输出端连到加工器，再接到售卖设备。</p>
+      <aside
+        aria-label="首局引导"
+        className={connectFrom === null ? 'chapter-tutorial' : 'chapter-tutorial is-connecting'}
+      >
+        <strong>{connectFrom === null ? '先让货物持续出售' : '现在选择接收端'}</strong>
+        <p>
+          {connectFrom === null
+            ? '拖动原料设备的输出端到加工器输入端，再接到售卖站。'
+            : '高亮端口正在等待连接；选择能接收货物的输入端。'}
+        </p>
       </aside>
       {isBuildDrawerOpen ? (
         <button

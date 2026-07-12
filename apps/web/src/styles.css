@@ -451,6 +451,12 @@ button:disabled {
   position: relative;
   z-index: 2;
 }
+.chapter-tutorial.is-connecting {
+  border-left-color: var(--signal-flow);
+}
+.chapter-tutorial.is-connecting strong {
+  color: var(--signal-flow);
+}
 .chapter-tutorial strong {
   color: var(--signal-amber);
   font-family: var(--font-display);
