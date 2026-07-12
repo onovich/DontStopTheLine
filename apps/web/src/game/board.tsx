@@ -34,6 +34,7 @@ interface BoardProps {
   readonly connectFrom: string | null;
   readonly ui: BoardUiState;
   readonly onConnect: (from: string, to: string) => boolean;
+  readonly onConnectStart: (from: string) => void;
   readonly onMove: (nodeId: string, position: Point) => void;
   readonly onPlace: (position: Point) => void;
   readonly onSelect: (nodeId: string) => void;
@@ -45,6 +46,7 @@ export function Board({
   factory,
   mode,
   onConnect,
+  onConnectStart,
   onMove,
   onPlace,
   onSelect,
@@ -61,12 +63,13 @@ export function Board({
 
   const toWorld = (event: PointerEvent<HTMLDivElement>): Point =>
     screenToWorld(event.clientX, event.clientY, boardRef, camera);
+  const placementLegal = (point: Point): boolean => isPlacementLegal(point, ui.positions);
   const onPointerDown = (event: PointerEvent<HTMLDivElement>): void => {
     const target = event.target instanceof Element ? event.target : null;
     if (target?.closest('button') !== null) return;
     const world = toWorld(event);
     if (mode === 'place') {
-      if (isWithinBoard(world)) onPlace(snap(world));
+      if (placementLegal(world)) onPlace(snap(world));
       return;
     }
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -153,11 +156,13 @@ export function Board({
         />
         {mode === 'place' && pointer !== null ? (
           <div
-            className={isWithinBoard(pointer) ? 'placement-ghost' : 'placement-ghost is-invalid'}
+            className={placementLegal(pointer) ? 'placement-ghost' : 'placement-ghost is-invalid'}
             style={{ left: snap(pointer).x, top: snap(pointer).y }}
           >
             <strong>{placementLabel}</strong>
-            <span>{isWithinBoard(pointer) ? '位置合法 · 不消耗现金' : '超出工厂边界'}</span>
+            <span>
+              {placementLegal(pointer) ? '位置合法 · 免费' : placementReason(pointer, ui.positions)}
+            </span>
           </div>
         ) : null}
         {Object.values(factory.nodes).map((node) => {
@@ -167,25 +172,55 @@ export function Board({
             drag?.nodeId === node.id && dragPosition !== null ? dragPosition : savedPosition;
           const selected = ui.selectedNodeId === node.id;
           return (
-            <button
-              aria-label={nodeLabel(node.kind)}
-              aria-pressed={selected}
+            <div
               className={`factory-node kind-${node.kind}${selected ? ' is-selected' : ''}`}
               key={node.id}
-              onClick={() => selectNode(node.id)}
-              onPointerDown={(event) => startDrag(event, node.id)}
               style={{ left: position.x, top: position.y }}
-              type="button"
             >
-              <span aria-hidden="true" className="node-icon">
-                {nodeIcon(node.kind)}
-              </span>
-              <span className="node-kind">{nodeLabel(node.kind)}</span>
-              <span className="node-name">{nodeStatus(node)}</span>
-              <span className="node-buffers">
-                输入 {node.input.length + node.reserved} · 输出 {node.output.length}
-              </span>
-            </button>
+              <button
+                aria-label={nodeLabel(node.kind)}
+                aria-pressed={selected}
+                className="node-body"
+                onClick={() => selectNode(node.id)}
+                onPointerDown={(event) => startDrag(event, node.id)}
+                type="button"
+              >
+                <span aria-hidden="true" className="node-icon">
+                  {nodeIcon(node.kind)}
+                </span>
+                <span className="node-kind">{nodeLabel(node.kind)}</span>
+                <span className="node-name">{nodeStatus(node)}</span>
+                <span className="node-buffers">
+                  输入 {node.input.length + node.reserved} · 输出 {node.output.length}
+                </span>
+              </button>
+              <button
+                aria-label={`连接到 ${nodeLabel(node.kind)} 的输入端`}
+                className="node-port node-port-input"
+                onClick={() => {
+                  if (connectFrom !== null && connectFrom !== node.id)
+                    onConnect(connectFrom, node.id);
+                }}
+                onPointerUp={() => {
+                  if (connectFrom !== null && connectFrom !== node.id)
+                    onConnect(connectFrom, node.id);
+                }}
+                type="button"
+              >
+                入
+              </button>
+              <button
+                aria-label={`从 ${nodeLabel(node.kind)} 的输出端开始连线`}
+                className="node-port node-port-output"
+                onPointerDown={(event) => {
+                  event.stopPropagation();
+                  onConnectStart(node.id);
+                }}
+                type="button"
+              >
+                出
+              </button>
+            </div>
           );
         })}
       </div>
@@ -322,6 +357,22 @@ function isWithinBoard(point: Point): boolean {
     point.x <= BOARD.width - NODE.width &&
     point.y <= BOARD.height - NODE.height
   );
+}
+function isPlacementLegal(point: Point, positions: Readonly<Record<string, Point>>): boolean {
+  if (!isWithinBoard(point)) return false;
+  const candidate = snap(point);
+  return !Object.values(positions).some(
+    (position) =>
+      candidate.x < position.x + NODE.width &&
+      candidate.x + NODE.width > position.x &&
+      candidate.y < position.y + NODE.height &&
+      candidate.y + NODE.height > position.y,
+  );
+}
+function placementReason(point: Point, positions: Readonly<Record<string, Point>>): string {
+  return isWithinBoard(point) && !isPlacementLegal(point, positions)
+    ? '该位置已有设备'
+    : '超出工厂边界';
 }
 function line(
   context: CanvasRenderingContext2D,

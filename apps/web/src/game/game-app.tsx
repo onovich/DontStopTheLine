@@ -187,6 +187,10 @@ export function GameApp() {
           factory={snapshot.factory}
           mode={snapshot.ui.mode}
           onConnect={connect}
+          onConnectStart={(nodeId) => {
+            setConnectFrom(nodeId);
+            session.setMode('select');
+          }}
           onMove={session.moveNode}
           onPlace={place}
           onSelect={select}

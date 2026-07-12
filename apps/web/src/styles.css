@@ -278,20 +278,56 @@ button:disabled {
   }
 }
 .factory-node {
-  align-content: center;
-  appearance: none;
   background: var(--surface-module);
   border: 2px solid var(--line-etched);
   border-radius: var(--radius-panel);
   color: var(--ink-strong);
+  height: 110px;
+  position: absolute;
+  width: 142px;
+}
+.node-body {
+  align-content: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
   cursor: pointer;
   display: grid;
   gap: var(--space-1);
-  height: 110px;
+  height: 100%;
   padding: var(--space-3);
-  position: absolute;
   text-align: left;
-  width: 142px;
+  width: 100%;
+}
+.node-port {
+  align-items: center;
+  background: var(--surface-deck);
+  border: 2px solid var(--signal-flow);
+  border-radius: 50%;
+  color: var(--signal-flow);
+  cursor: crosshair;
+  display: inline-flex;
+  font-size: 0.62rem;
+  font-weight: 800;
+  height: 1.5rem;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  top: calc(50% - 0.75rem);
+  width: 1.5rem;
+  z-index: 2;
+}
+.node-port-input {
+  left: -0.8rem;
+}
+.node-port-output {
+  right: -0.8rem;
+}
+.node-port:hover,
+.node-port:focus-visible {
+  background: var(--signal-flow);
+  color: var(--surface-deck);
 }
 .placement-ghost {
   background: color-mix(in srgb, var(--signal-flow) 18%, var(--surface-module));

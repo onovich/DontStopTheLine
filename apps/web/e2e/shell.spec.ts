@@ -11,13 +11,13 @@ test('builds and connects a profitable P0 chain without console errors', async (
   await page.getByRole('button', { name: '基础加工器' }).click();
   await page
     .getByRole('application', { name: 'Factory board' })
-    .click({ position: { x: 500, y: 350 } });
+    .click({ position: { x: 470, y: 160 } });
   await expect(page.getByRole('button', { exact: true, name: '加工器' })).toBeVisible();
 
-  await page.getByRole('button', { name: '连线' }).click();
+  await page.getByRole('button', { exact: true, name: '连线' }).click();
   await page.getByRole('button', { exact: true, name: '原料源' }).click();
   await page.getByRole('button', { exact: true, name: '加工器' }).click();
-  await page.getByRole('button', { name: '连线' }).click();
+  await page.getByRole('button', { exact: true, name: '连线' }).click();
   await page.getByRole('button', { exact: true, name: '加工器' }).click();
   await page.getByRole('button', { exact: true, name: '售卖站' }).click();
 
@@ -36,6 +36,16 @@ test('shows a blocking explanation and keeps controls responsive', async ({ page
   await expect(page.getByRole('button', { name: '继续' })).toBeVisible();
   await page.getByRole('button', { name: '4×' }).click();
   await expect(page.getByRole('button', { name: '4×' })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('previews free legal placement and rejects occupied footprint', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: '基础加工器' }).click();
+  const board = page.getByRole('application', { name: 'Factory board' });
+  await board.hover({ position: { x: 470, y: 160 } });
+  await expect(page.getByText('位置合法 · 免费')).toBeVisible();
+  await board.hover({ position: { x: 205, y: 300 } });
+  await expect(page.getByText('该位置已有设备')).toBeVisible();
 });
 
 test('progressively discloses advanced builds and keeps routing controls accessible', async ({
