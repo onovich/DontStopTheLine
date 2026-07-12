@@ -296,14 +296,32 @@ function StrategyControls({
   readonly onSell: (id: string) => boolean;
   readonly onUpgrade: (id: string) => boolean;
 }) {
+  const [confirmSell, setConfirmSell] = useState(false);
   return (
     <>
       <button onClick={() => onUpgrade(nodeId)} type="button">
         升级设备
       </button>
-      <button onClick={() => onSell(nodeId)} type="button">
+      <button onClick={() => setConfirmSell(true)} type="button">
         出售并退款
       </button>
+      {confirmSell ? (
+        <div className="sell-confirm" role="alert">
+          <span>出售会清空此设备内的货物；当前规则下退款免费。</span>
+          <button
+            onClick={() => {
+              onSell(nodeId);
+              setConfirmSell(false);
+            }}
+            type="button"
+          >
+            确认出售
+          </button>
+          <button onClick={() => setConfirmSell(false)} type="button">
+            保留设备
+          </button>
+        </div>
+      ) : null}
       {(['overflow', 'priority', 'even'] as const).map((strategy) => (
         <button key={strategy} onClick={() => onRoute(nodeId, strategy)} type="button">
           {routingLabel(strategy)}

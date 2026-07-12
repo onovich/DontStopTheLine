@@ -468,6 +468,18 @@ button:disabled {
 .status-blocked {
   color: var(--signal-fault) !important;
 }
+.sell-confirm {
+  border-left: 3px solid var(--signal-fault);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2);
+}
+.sell-confirm span {
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  width: 100%;
+}
 
 .control-bar {
   background: var(--surface-module);
