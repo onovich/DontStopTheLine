@@ -24,7 +24,12 @@ export function GameHud({
     <header className="game-hud">
       <div className="hud-title">
         <p className="eyebrow">LINE CONTROL / 01</p>
-        <h1>Don&apos;t Stop The Line</h1>
+        <h1 aria-label="Don't Stop The Line">
+          <span className="brand-full">Don&apos;t Stop The Line</span>
+          <span aria-hidden="true" className="brand-compact">
+            产线别停 / DSTL
+          </span>
+        </h1>
       </div>
       <dl className="hud-readouts">
         <div>

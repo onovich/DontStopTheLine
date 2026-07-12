@@ -37,6 +37,7 @@ interface BoardProps {
   readonly onMove: (nodeId: string, position: Point) => void;
   readonly onPlace: (position: Point) => void;
   readonly onSelect: (nodeId: string) => void;
+  readonly placementLabel: string;
 }
 
 export function Board({
@@ -47,6 +48,7 @@ export function Board({
   onMove,
   onPlace,
   onSelect,
+  placementLabel,
   ui,
 }: BoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,7 +66,7 @@ export function Board({
     if (target?.closest('button') !== null) return;
     const world = toWorld(event);
     if (mode === 'place') {
-      onPlace(snap(world));
+      if (isWithinBoard(world)) onPlace(snap(world));
       return;
     }
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -149,6 +151,15 @@ export function Board({
           pointer={pointer}
           positions={ui.positions}
         />
+        {mode === 'place' && pointer !== null ? (
+          <div
+            className={isWithinBoard(pointer) ? 'placement-ghost' : 'placement-ghost is-invalid'}
+            style={{ left: snap(pointer).x, top: snap(pointer).y }}
+          >
+            <strong>{placementLabel}</strong>
+            <span>{isWithinBoard(pointer) ? '位置合法 · 不消耗现金' : '超出工厂边界'}</span>
+          </div>
+        ) : null}
         {Object.values(factory.nodes).map((node) => {
           const savedPosition = ui.positions[node.id];
           if (savedPosition === undefined) return null;
@@ -303,6 +314,14 @@ function snap(point: Point): Point {
 }
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(value, minimum), maximum);
+}
+function isWithinBoard(point: Point): boolean {
+  return (
+    point.x >= 0 &&
+    point.y >= 0 &&
+    point.x <= BOARD.width - NODE.width &&
+    point.y <= BOARD.height - NODE.height
+  );
 }
 function line(
   context: CanvasRenderingContext2D,

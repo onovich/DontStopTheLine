@@ -39,5 +39,6 @@ test.describe('Phase 7 verified visual baseline', () => {
     });
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog', { name: '建造目录' })).not.toBeVisible();
+    await expect(page.getByRole('button', { name: '建造设备' })).toBeFocused();
   });
 });

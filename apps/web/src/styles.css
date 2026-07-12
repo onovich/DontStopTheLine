@@ -90,6 +90,9 @@ h1 {
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
+.brand-compact {
+  display: none;
+}
 h2 {
   font-family: var(--font-display);
   font-size: 1.1rem;
@@ -290,6 +293,28 @@ button:disabled {
   text-align: left;
   width: 142px;
 }
+.placement-ghost {
+  background: color-mix(in srgb, var(--signal-flow) 18%, var(--surface-module));
+  border: 2px dashed var(--signal-flow);
+  color: var(--ink-strong);
+  display: grid;
+  gap: var(--space-1);
+  height: 110px;
+  padding: var(--space-3);
+  pointer-events: none;
+  position: absolute;
+  width: 142px;
+}
+.placement-ghost span {
+  color: var(--signal-flow);
+  font-size: 0.7rem;
+}
+.placement-ghost.is-invalid {
+  border-color: var(--signal-fault);
+}
+.placement-ghost.is-invalid span {
+  color: var(--signal-fault);
+}
 .factory-node:hover,
 .factory-node.is-selected {
   border-color: var(--signal-flow);
@@ -421,6 +446,14 @@ button:disabled {
     grid-column: 1;
     grid-row: 1;
     grid-template-columns: 1fr auto;
+  }
+  .brand-full {
+    display: none;
+  }
+  .brand-compact {
+    display: inline;
+    font-size: 1.2rem;
+    white-space: nowrap;
   }
   .hud-readouts {
     gap: var(--space-2);

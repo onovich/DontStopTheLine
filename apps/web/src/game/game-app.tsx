@@ -31,6 +31,7 @@ const BUILDABLE: readonly BuildOption[] = [
 export function GameApp() {
   const sessionRef = useRef<GameSession | null>(null);
   const buildDrawerCloseRef = useRef<HTMLButtonElement | null>(null);
+  const buildDrawerRef = useRef<HTMLElement | null>(null);
   const buildToggleRef = useRef<HTMLButtonElement | null>(null);
   if (sessionRef.current === null) sessionRef.current = createGameSession();
   const session = sessionRef.current;
@@ -51,9 +52,25 @@ export function GameApp() {
     if (!isBuildDrawerOpen) return;
     buildDrawerCloseRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key !== 'Escape') return;
-      setBuildDrawerOpen(false);
-      requestAnimationFrame(() => buildToggleRef.current?.focus());
+      if (event.key === 'Escape') {
+        setBuildDrawerOpen(false);
+        requestAnimationFrame(() => buildToggleRef.current?.focus());
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const controls =
+        buildDrawerRef.current?.querySelectorAll<HTMLElement>('button:not([disabled])');
+      if (controls === undefined || controls.length === 0) return;
+      const first = controls.item(0);
+      const last = controls.item(controls.length - 1);
+      if (first === null || last === null) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
@@ -129,6 +146,7 @@ export function GameApp() {
         aria-modal="true"
         className={isBuildDrawerOpen ? 'build-drawer is-open' : 'build-drawer'}
         id="build-catalog"
+        ref={buildDrawerRef}
         role="dialog"
       >
         <div className="drawer-heading">
@@ -172,6 +190,7 @@ export function GameApp() {
           onMove={session.moveNode}
           onPlace={place}
           onSelect={select}
+          placementLabel={buildOption.label}
           ui={snapshot.ui}
         />
       </section>
