@@ -24,7 +24,9 @@ idempotency:
   last_planner_dispatch_guide: docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md
   last_planner_dispatch_commit: f605f67c07961561a93b96e94fdb2f199a9ce72b
   last_executor_report_commit: a5e9d64
-  last_executor_report_status: ready_for_check
+  last_executor_report_status: repair_in_progress
   last_executor_report_guide: docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md
   last_executor_report_at: 2026-07-13T03:10:00+08:00
-  last_check_status: pass
+  last_check_status: fail
+  last_repair_request: 2026-07-13T03:13:00+08:00
+  last_repair_reason: CI smoke fails on the 390px keyboard-port path because the collapsed build drawer is not opened before selecting the processor.

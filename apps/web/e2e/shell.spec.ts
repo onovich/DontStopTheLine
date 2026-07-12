@@ -70,6 +70,8 @@ test('previews free legal placement and rejects occupied footprint', async ({ pa
 test('keeps port targets touch-sized and supports keyboard connection', async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });
   await page.goto('/');
+  await page.getByRole('button', { name: '建造' }).click();
+  await expect(page.getByRole('dialog', { name: '建造目录' })).toBeVisible();
   await page.getByRole('button', { name: '基础加工器' }).click();
   await page
     .getByRole('application', { name: 'Factory board' })
