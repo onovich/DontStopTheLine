@@ -2,7 +2,7 @@
 
 workspace: D:\WebProjects\DontStopTheLine
 created_at: 2026-07-11T14:29:00+08:00
-updated_at: 2026-07-12T00:00:00+08:00
+updated_at: 2026-07-13T00:10:00+08:00
 
 designer:
   role: designer
@@ -17,12 +17,12 @@ executor:
   evidence: current active 程序开发执行者 thread in the same workspace.
 
 idempotency:
-  active_goal_guide: docs/phase-6-goal-mode-execution-guide.md
-  active_goal_phase: Phase 6 性能与发布候选
+  active_goal_guide: docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md
+  active_goal_phase: Phase 7 内测可玩性与视觉重构
   last_planner_dispatch: 2026-07-11T16:00:00+08:00
   last_planner_dispatch_status: ready
-  last_planner_dispatch_guide: docs/phase-6-goal-mode-execution-guide.md
-  last_executor_report_commit: e24dc2d
+  last_planner_dispatch_guide: docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md
+  last_executor_report_commit: f2cc2be
   last_executor_report_status: ready_for_check
   last_executor_report_guide: docs/phase-6-goal-mode-execution-guide.md
   last_executor_report_at: 2026-07-12T00:00:00+08:00
