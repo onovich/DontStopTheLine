@@ -302,31 +302,45 @@ button:disabled {
 }
 .node-port {
   align-items: center;
-  background: var(--surface-deck);
-  border: 2px solid var(--signal-flow);
-  border-radius: 50%;
+  background: transparent;
+  border: 0;
   color: var(--signal-flow);
   cursor: crosshair;
   display: inline-flex;
   font-size: 0.62rem;
   font-weight: 800;
-  height: 1.5rem;
+  height: 110px;
   justify-content: center;
   padding: 0;
   position: absolute;
-  top: calc(50% - 0.75rem);
-  width: 1.5rem;
+  top: 0;
+  width: 110px;
   z-index: 2;
 }
+.node-port::before {
+  background: var(--surface-deck);
+  border: 2px solid var(--signal-flow);
+  border-radius: 50%;
+  content: '';
+  height: 1.5rem;
+  position: absolute;
+  width: 1.5rem;
+  z-index: -1;
+}
 .node-port-input {
-  left: -0.8rem;
+  left: -55px;
 }
 .node-port-output {
-  right: -0.8rem;
+  right: -55px;
+}
+.node-port:hover::before,
+.node-port:focus-visible::before,
+.node-port[aria-pressed='true']::before {
+  background: var(--signal-flow);
 }
 .node-port:hover,
-.node-port:focus-visible {
-  background: var(--signal-flow);
+.node-port:focus-visible,
+.node-port[aria-pressed='true'] {
   color: var(--surface-deck);
 }
 .placement-ghost {

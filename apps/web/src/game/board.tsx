@@ -216,7 +216,9 @@ export function Board({
               </button>
               <button
                 aria-label={`从 ${nodeLabel(node.kind)} 的输出端开始连线`}
+                aria-pressed={connectFrom === node.id}
                 className="node-port node-port-output"
+                onClick={() => onConnectStart(node.id)}
                 onPointerDown={(event) => {
                   event.stopPropagation();
                   onConnectStart(node.id);

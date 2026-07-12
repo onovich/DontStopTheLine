@@ -46,6 +46,7 @@ export function GameApp() {
   const [wideLine, setWideLine] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [connectFrom, setConnectFrom] = useState<string | null>(null);
+  const [connectionMessage, setConnectionMessage] = useState<string | null>(null);
   const [isBuildDrawerOpen, setBuildDrawerOpen] = useState(false);
   useAnimationFrame(session);
   useEffect(() => {
@@ -95,8 +96,13 @@ export function GameApp() {
   };
   const connect = (from: string, to: string): boolean => {
     const connected = session.connect(from, to, wideLine ? 3 : 1);
-    setConnectFrom(null);
-    session.setMode('select');
+    if (connected) {
+      setConnectFrom(null);
+      setConnectionMessage(null);
+      session.setMode('select');
+    } else {
+      setConnectionMessage('不能连接：目标不接受这批货物或暂时没有空位。');
+    }
     return connected;
   };
   const select = (nodeId: string): void => {
@@ -269,7 +275,10 @@ export function GameApp() {
           />
         )}
         <span>
-          {connectFrom === null ? '从设备输出端拖到接收端，或选择连线工具。' : '选择一个接收设备。'}
+          {connectionMessage ??
+            (connectFrom === null
+              ? '从设备输出端拖到接收端，或选择连线工具。'
+              : '选择一个接收设备。')}
         </span>
       </nav>
     </main>

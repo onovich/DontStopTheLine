@@ -48,6 +48,29 @@ test('previews free legal placement and rejects occupied footprint', async ({ pa
   await expect(page.getByText('该位置已有设备')).toBeVisible();
 });
 
+test('keeps port targets touch-sized and supports keyboard connection', async ({ page }) => {
+  await page.setViewportSize({ height: 844, width: 390 });
+  await page.goto('/');
+  await page.getByRole('button', { name: '基础加工器' }).click();
+  await page
+    .getByRole('application', { name: 'Factory board' })
+    .click({ position: { x: 250, y: 150 } });
+  const output = page.getByRole('button', { name: '从 原料源 的输出端开始连线' });
+  const input = page.getByRole('button', { name: '连接到 加工器 的输入端' });
+  const outputBox = await output.boundingBox();
+  const inputBox = await input.boundingBox();
+  expect(outputBox?.width).toBeGreaterThanOrEqual(44);
+  expect(outputBox?.height).toBeGreaterThanOrEqual(44);
+  expect(inputBox?.width).toBeGreaterThanOrEqual(44);
+  expect(inputBox?.height).toBeGreaterThanOrEqual(44);
+  await output.focus();
+  await page.keyboard.press('Enter');
+  await expect(output).toHaveAttribute('aria-pressed', 'true');
+  await input.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.factory-line')).toHaveCount(1);
+});
+
 test('progressively discloses advanced builds and keeps routing controls accessible', async ({
   page,
 }) => {
