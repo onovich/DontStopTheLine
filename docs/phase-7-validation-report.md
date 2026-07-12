@@ -29,7 +29,7 @@
 - `CI=true pnpm smoke`
 - `git diff --check`
 
-最终修复后的 `CI=true pnpm smoke`：5 个常规交互测试通过，6 个仅在显式截图采集环境启用的视觉测试按设计跳过；无失败用例。
+最终修复后的 `CI=true pnpm exec playwright test --reporter=line`：5 个常规交互测试通过、6 个仅在显式截图采集环境启用的视觉测试按设计跳过，8.0 秒完成，退出码 0。
 
 ## 目标指标的自动化代理证据
 
