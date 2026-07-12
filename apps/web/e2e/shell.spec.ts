@@ -20,6 +20,7 @@ test('builds and connects a profitable P0 chain without console errors', async (
   await page
     .getByRole('button', { name: '从 加工器 的输出端开始连线' })
     .dragTo(page.getByRole('button', { name: '连接到 售卖站 的输入端' }));
+  await expect(page.locator('.factory-line')).toHaveCount(2);
 
   await expect(page.locator('.money')).not.toHaveText(/\$ 0/, { timeout: 5000 });
   expect(errors).toEqual([]);

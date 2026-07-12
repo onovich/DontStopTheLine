@@ -262,6 +262,17 @@ button:disabled {
   stroke: var(--signal-flow);
   stroke-width: 5;
 }
+.factory-line.is-congested line {
+  stroke: var(--signal-fault);
+  stroke-dasharray: 8 5;
+  stroke-width: 7;
+}
+.line-arrow {
+  fill: var(--signal-flow);
+}
+.factory-line.is-congested .line-arrow {
+  fill: var(--signal-fault);
+}
 .line-preview {
   stroke: var(--signal-amber);
   stroke-dasharray: 10 8;

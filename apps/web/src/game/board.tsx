@@ -202,7 +202,9 @@ export function Board({
               <button
                 aria-label={`连接到 ${nodeLabel(node.kind)} 的输入端`}
                 className="node-port node-port-input"
-                onClick={() => {
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter' && event.key !== ' ') return;
+                  event.preventDefault();
                   if (connectFrom !== null && connectFrom !== node.id)
                     onConnect(connectFrom, node.id);
                 }}
@@ -218,7 +220,11 @@ export function Board({
                 aria-label={`从 ${nodeLabel(node.kind)} 的输出端开始连线`}
                 aria-pressed={connectFrom === node.id}
                 className="node-port node-port-output"
-                onClick={() => onConnectStart(node.id)}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter' && event.key !== ' ') return;
+                  event.preventDefault();
+                  onConnectStart(node.id);
+                }}
                 onPointerDown={(event) => {
                   event.stopPropagation();
                   onConnectStart(node.id);
@@ -258,9 +264,10 @@ function LineLayer({
     >
       {Object.values(factory.lines).map((line) => (
         <Line
+          capacity={line.capacity}
           key={line.id}
           from={positions[line.from]}
-          inTransit={line.items.length > 0}
+          itemCount={line.items.length}
           to={positions[line.to]}
         />
       ))}
@@ -278,27 +285,29 @@ function LineLayer({
 }
 
 function Line({
+  capacity,
   from,
-  inTransit,
+  itemCount,
   to,
 }: {
+  readonly capacity: number;
   readonly from: Point | undefined;
-  readonly inTransit: boolean;
+  readonly itemCount: number;
   readonly to: Point | undefined;
 }) {
   if (from === undefined || to === undefined) return null;
   const start = { x: from.x + NODE.width, y: from.y + NODE.height / 2 };
   const end = { x: to.x, y: to.y + NODE.height / 2 };
+  const midpoint = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
   return (
-    <g className="factory-line">
+    <g className={itemCount >= capacity ? 'factory-line is-congested' : 'factory-line'}>
       <line x1={start.x} x2={end.x} y1={start.y} y2={end.y} />
-      {inTransit ? (
-        <circle
-          className="transit-dot"
-          cx={(start.x + end.x) / 2}
-          cy={(start.y + end.y) / 2}
-          r="7"
-        />
+      <path
+        className="line-arrow"
+        d={`M ${midpoint.x - 7} ${midpoint.y - 6} L ${midpoint.x + 7} ${midpoint.y} L ${midpoint.x - 7} ${midpoint.y + 6} Z`}
+      />
+      {itemCount > 0 ? (
+        <circle className="transit-dot" cx={midpoint.x} cy={midpoint.y} r="7" />
       ) : null}
     </g>
   );
