@@ -1,0 +1,12 @@
+{
+  "name": "@dstl/desktop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "build": "node --check main.cjs && node --check preload.cjs",
+    "lint": "node --check main.cjs && node --check preload.cjs",
+    "test": "node --check main.cjs && node --check preload.cjs",
+    "typecheck": "node --check main.cjs && node --check preload.cjs"
+  }
+}
