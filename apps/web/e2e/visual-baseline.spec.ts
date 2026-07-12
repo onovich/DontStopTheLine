@@ -5,6 +5,7 @@ const viewports = [
   { height: 768, name: '1024x768', width: 1024 },
   { height: 1024, name: '768x1024', width: 768 },
   { height: 844, name: '390x844', width: 390 },
+  { height: 568, name: '320x568', width: 320 },
 ] as const;
 const capturePrefix = process.env.CAPTURE_PHASE7_PREFIX ?? 'phase-7-before-verified';
 
@@ -20,6 +21,30 @@ test.describe('Phase 7 verified visual baseline', () => {
       await expect(page.getByRole('button', { exact: true, name: '原料源' })).toBeVisible();
       await expect(page.getByRole('button', { exact: true, name: '售卖站' })).toBeVisible();
       await expect(page.getByLabel('设备检查器')).toHaveCount(0);
+      await expect(
+        page.evaluate(
+          () => document.documentElement.scrollWidth === document.documentElement.clientWidth,
+        ),
+      ).resolves.toBe(true);
+      if (viewport.width <= 390) {
+        const required = [
+          page.getByRole('heading', { name: "Don't Stop The Line" }),
+          page.getByText('现金', { exact: true }),
+          page.getByRole('button', { name: '暂停' }),
+          page.getByRole('button', { name: '1×' }),
+          page.getByRole('button', { name: '2×' }),
+          page.getByRole('button', { name: '4×' }),
+          page.getByLabel('减少动画'),
+          page.getByRole('application', { name: 'Factory board' }),
+          page.getByRole('button', { exact: true, name: '原料源' }),
+          page.getByRole('button', { exact: true, name: '售卖站' }),
+        ];
+        for (const locator of required) {
+          const box = await locator.boundingBox();
+          expect(box?.x).toBeGreaterThanOrEqual(0);
+          expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(viewport.width);
+        }
+      }
       await page.screenshot({
         fullPage: false,
         path: `artifacts/visual/${capturePrefix}-${viewport.name}.png`,
