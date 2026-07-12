@@ -82,7 +82,11 @@ importers:
 
   packages/domain: {}
 
-  packages/persistence: {}
+  packages/persistence:
+    dependencies:
+      '@dstl/simulation':
+        specifier: workspace:*
+        version: link:../simulation
 
   packages/platform: {}
 
