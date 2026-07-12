@@ -23,3 +23,8 @@ export function runProfitChain(seed = 1): FactoryState {
 export function goldenSnapshot(seed = 1): string {
   return serializeSnapshot(runProfitChain(seed));
 }
+export {
+  runThousandNodeBenchmark,
+  thousandNodeCommands,
+  type PerformanceReport,
+} from './performance.js';
