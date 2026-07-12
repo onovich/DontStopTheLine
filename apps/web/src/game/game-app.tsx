@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { explainBlock, selectNode, type BlockReason } from '@dstl/simulation';
 import type { ItemKind, NodeKind, RoutingStrategy } from '@dstl/domain';
 import { Board } from './board.js';
+import { GameHud } from './game-hud.js';
 import {
   createGameSession,
   SPEEDS,
@@ -10,7 +11,6 @@ import {
   type Point,
 } from './session.js';
 
-const GOALS = [10, 30, 50] as const;
 interface BuildOption {
   readonly kind: NodeKind;
   readonly label: string;
@@ -75,7 +75,6 @@ export function GameApp() {
     }
     session.setSelectedNode(nodeId);
   };
-  const nextGoal = GOALS.find((goal) => goal > snapshot.statistics.money) ?? GOALS.at(-1) ?? 50;
   const selectedNodeId = snapshot.ui.selectedNodeId;
   const selected = selectedNodeId === null ? null : selectNode(snapshot.factory, selectedNodeId);
   const selectedState =
@@ -83,30 +82,24 @@ export function GameApp() {
 
   return (
     <main className={reducedMotion ? 'game-shell reduced-motion' : 'game-shell'}>
-      <header className="top-bar">
-        <div>
-          <p className="eyebrow">PLAYABLE P0 · DETERMINISTIC FACTORY</p>
-          <h1>Don&apos;t Stop The Line</h1>
-        </div>
-        <div className="money">
-          $ {snapshot.statistics.money}
-          <small>next goal {nextGoal}</small>
-        </div>
-        <GoalProgress money={snapshot.statistics.money} />
-        <label className="motion-setting">
-          <input
-            checked={reducedMotion}
-            onChange={(event) => setReducedMotion(event.target.checked)}
-            type="checkbox"
-          />
-          Reduce motion
-        </label>
-      </header>
+      <GameHud
+        money={snapshot.statistics.money}
+        onSetPaused={session.setPaused}
+        onSetSpeed={session.setSpeed}
+        paused={snapshot.paused}
+        speed={snapshot.speed}
+      />
+      <label className="motion-setting">
+        <input
+          checked={reducedMotion}
+          onChange={(event) => setReducedMotion(event.target.checked)}
+          type="checkbox"
+        />
+        减少动画
+      </label>
       <aside aria-label="Chapter tutorial" className="chapter-tutorial">
-        <strong>Chapter 1 · First maze line</strong>
-        <p>
-          Place a maze producer, connect it to a processor, then observe its deterministic output.
-        </p>
+        <strong>先让货物持续出售</strong>
+        <p>从原料设备的输出端连到加工器，再接到售卖设备。</p>
       </aside>
       <aside aria-label="Build drawer" className="build-drawer">
         <h2>Build</h2>
@@ -250,17 +243,6 @@ function StrategyControls({
   );
 }
 
-function GoalProgress({ money }: { readonly money: number }) {
-  return (
-    <ol aria-label="Sales goals" className="goal-progress">
-      {GOALS.map((goal) => (
-        <li className={money >= goal ? 'complete' : ''} key={goal}>
-          {money >= goal ? '✓' : '○'} {goal}
-        </li>
-      ))}
-    </ol>
-  );
-}
 function suggestion(block: BlockReason): string {
   const suggestions = {
     NO_INPUT: 'Connect a compatible source or storage output.',

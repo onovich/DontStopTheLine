@@ -6,6 +6,7 @@ const viewports = [
   { height: 1024, name: '768x1024', width: 768 },
   { height: 844, name: '390x844', width: 390 },
 ] as const;
+const capturePrefix = process.env.CAPTURE_PHASE7_PREFIX ?? 'phase-7-before-verified';
 
 test.describe('Phase 7 verified visual baseline', () => {
   test.skip(process.env.CAPTURE_PHASE7_BASELINE !== '1', 'Capture is explicit and repeatable.');
@@ -18,7 +19,7 @@ test.describe('Phase 7 verified visual baseline', () => {
       await expect(page.getByRole('application', { name: 'Factory board' })).toBeVisible();
       await page.screenshot({
         fullPage: false,
-        path: `artifacts/visual/phase-7-before-verified-${viewport.name}.png`,
+        path: `artifacts/visual/${capturePrefix}-${viewport.name}.png`,
       });
     });
   }

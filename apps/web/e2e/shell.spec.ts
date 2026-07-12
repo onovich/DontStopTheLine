@@ -30,18 +30,18 @@ test('shows a blocking explanation and keeps controls responsive', async ({ page
   await page.getByRole('button', { name: /source-1/ }).click();
   await expect(page.getByText(/OUTPUT_FULL:/)).toBeVisible({ timeout: 3000 });
 
-  await page.getByRole('button', { name: 'Pause' }).click();
-  await expect(page.getByRole('button', { name: 'Resume' })).toBeVisible();
-  await page.getByRole('button', { name: '4x' }).click();
-  await expect(page.getByRole('button', { name: '4x' })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: '暂停' }).click();
+  await expect(page.getByRole('button', { name: '继续' })).toBeVisible();
+  await page.getByRole('button', { name: '4×' }).click();
+  await expect(page.getByRole('button', { name: '4×' })).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('exposes the P1 strategy build and routing controls', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'Place coal source' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Place maze producer' })).toBeVisible();
-  await expect(page.getByText('Chapter 1 · First maze line')).toBeVisible();
-  await page.getByLabel('Reduce motion').check();
+  await expect(page.getByText('先让货物持续出售')).toBeVisible();
+  await page.getByLabel('减少动画').check();
   await expect(page.getByRole('button', { name: 'Place gear assembler' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Place warehouse' })).toBeVisible();
   await page.getByRole('button', { name: 'Wide line' }).click();
