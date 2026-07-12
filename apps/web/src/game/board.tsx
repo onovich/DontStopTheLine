@@ -11,7 +11,7 @@ import type { FactoryState } from '@dstl/simulation';
 import type { BoardUiState, InteractionMode, Point } from './session.js';
 
 const BOARD = { height: 700, width: 1000 };
-const NODE = { height: 98, width: 142 };
+const NODE = { height: 110, width: 142 };
 
 interface Camera {
   readonly x: number;
@@ -51,7 +51,7 @@ export function Board({
 }: BoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
-  const [camera, setCamera] = useState<Camera>({ x: 0, y: 0, zoom: 1 });
+  const [camera, setCamera] = useState<Camera>(() => initialCamera(window.innerWidth));
   const [drag, setDrag] = useState<DragState | null>(null);
   const [pan, setPan] = useState<PanState | null>(null);
   const [pointer, setPointer] = useState<Point | null>(null);
@@ -115,7 +115,7 @@ export function Board({
   const zoom = (event: WheelEvent<HTMLDivElement>): void => {
     event.preventDefault();
     const factor = event.deltaY < 0 ? 1.1 : 0.9;
-    setCamera((current) => ({ ...current, zoom: clamp(current.zoom * factor, 0.55, 1.75) }));
+    setCamera((current) => ({ ...current, zoom: clamp(current.zoom * factor, 0.4, 1.75) }));
   };
   const dragPosition =
     drag === null || pointer === null
@@ -157,6 +157,7 @@ export function Board({
           const selected = ui.selectedNodeId === node.id;
           return (
             <button
+              aria-label={nodeLabel(node.kind)}
               aria-pressed={selected}
               className={`factory-node kind-${node.kind}${selected ? ' is-selected' : ''}`}
               key={node.id}
@@ -165,18 +166,20 @@ export function Board({
               style={{ left: position.x, top: position.y }}
               type="button"
             >
-              <span className="node-kind">{node.kind}</span>
-              <span className="node-name">{node.id}</span>
+              <span aria-hidden="true" className="node-icon">
+                {nodeIcon(node.kind)}
+              </span>
+              <span className="node-kind">{nodeLabel(node.kind)}</span>
+              <span className="node-name">{nodeStatus(node)}</span>
               <span className="node-buffers">
-                IN {node.input.length + node.reserved} · WORK{' '}
-                {node.workItem === null ? '—' : node.workItem} · OUT {node.output.length}
+                输入 {node.input.length + node.reserved} · 输出 {node.output.length}
               </span>
             </button>
           );
         })}
       </div>
       <p className="camera-readout">
-        {Math.round(camera.zoom * 100)}% · drag empty space to pan · scroll to zoom
+        缩放 {Math.round(camera.zoom * 100)}% · 拖动画布平移 · 滚轮缩放
       </p>
     </div>
   );
@@ -315,4 +318,39 @@ function line(
 }
 function modulo(value: number, divisor: number): number {
   return ((value % divisor) + divisor) % divisor;
+}
+function initialCamera(viewportWidth: number): Camera {
+  if (viewportWidth <= 700) return { x: 0, y: 0, zoom: 0.4 };
+  if (viewportWidth <= 1100) return { x: 0, y: 0, zoom: 0.5 };
+  return { x: 0, y: 0, zoom: 0.8 };
+}
+function nodeLabel(kind: string): string {
+  const labels: Record<string, string> = {
+    'advanced-producer': '迷宫生产机',
+    processor: '加工器',
+    router: '分流器',
+    seller: '售卖站',
+    source: '原料源',
+    storage: '缓冲仓',
+    warehouse: '大型仓库',
+  };
+  return labels[kind] ?? '设备';
+}
+function nodeStatus(node: FactoryState['nodes'][string]): string {
+  if (node.workItem !== null) return '正在加工';
+  if (node.output.length > 0) return '等待输出';
+  if (node.input.length + node.reserved > 0) return '准备加工';
+  return '等待货物';
+}
+function nodeIcon(kind: string): string {
+  const icons: Record<string, string> = {
+    'advanced-producer': '◇',
+    processor: '⚙',
+    router: '↗',
+    seller: '¤',
+    source: '●',
+    storage: '▣',
+    warehouse: '▤',
+  };
+  return icons[kind] ?? '●';
 }

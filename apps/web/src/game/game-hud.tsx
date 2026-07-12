@@ -7,12 +7,16 @@ export function GameHud({
   onSetPaused,
   onSetSpeed,
   paused,
+  reducedMotion,
+  onReducedMotionChange,
   speed,
 }: {
   readonly money: number;
   readonly onSetPaused: (paused: boolean) => void;
+  readonly onReducedMotionChange: (reduced: boolean) => void;
   readonly onSetSpeed: (speed: SimulationSpeed) => void;
   readonly paused: boolean;
+  readonly reducedMotion: boolean;
   readonly speed: SimulationSpeed;
 }) {
   const nextGoal = GOALS.find((goal) => goal > money) ?? GOALS.at(-1) ?? 50;
@@ -47,6 +51,14 @@ export function GameHud({
             {option}×
           </button>
         ))}
+        <label className="hud-motion">
+          <input
+            checked={reducedMotion}
+            onChange={(event) => onReducedMotionChange(event.target.checked)}
+            type="checkbox"
+          />
+          减少动画
+        </label>
       </div>
     </header>
   );

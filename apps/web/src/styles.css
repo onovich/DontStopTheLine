@@ -146,14 +146,13 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
-.motion-setting {
+.hud-motion {
+  align-items: center;
   color: var(--ink-muted);
+  display: inline-flex;
   font-size: 0.72rem;
-  grid-column: 1;
-  grid-row: 2;
-  align-self: end;
-  margin: 0 var(--space-3) var(--space-3);
-  z-index: 2;
+  gap: var(--space-1);
+  white-space: nowrap;
 }
 
 .build-drawer,
@@ -178,6 +177,35 @@ button:disabled {
 }
 .build-drawer button {
   text-align: left;
+}
+.build-drawer button strong,
+.build-drawer button span {
+  display: block;
+}
+.build-drawer button span {
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  margin-top: var(--space-1);
+}
+.drawer-heading {
+  align-items: start;
+  display: flex;
+  justify-content: space-between;
+}
+.drawer-close,
+.build-drawer-toggle {
+  display: none;
+}
+.build-drawer-backdrop {
+  display: none;
+}
+.locked-unlocks {
+  border-top: 1px solid var(--line-etched);
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  margin: var(--space-2) 0 0;
+  padding-top: var(--space-2);
 }
 .inspector {
   grid-column: 3;
@@ -256,7 +284,7 @@ button:disabled {
   cursor: pointer;
   display: grid;
   gap: var(--space-1);
-  height: 98px;
+  height: 110px;
   padding: var(--space-3);
   position: absolute;
   text-align: left;
@@ -281,6 +309,9 @@ button:disabled {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+.node-icon {
+  display: none;
+}
 .node-name,
 .node-buffers {
   font-size: 0.75rem;
@@ -289,13 +320,13 @@ button:disabled {
   color: var(--ink-muted);
 }
 .camera-readout {
-  bottom: var(--space-2);
   color: var(--ink-muted);
   font-family: var(--font-data);
   font-size: 0.7rem;
-  left: var(--space-2);
   pointer-events: none;
   position: absolute;
+  right: var(--space-2);
+  top: var(--space-2);
 }
 
 .chapter-tutorial {
@@ -388,6 +419,7 @@ button:disabled {
   .game-hud {
     gap: var(--space-2);
     grid-column: 1;
+    grid-row: 1;
     grid-template-columns: 1fr auto;
   }
   .hud-readouts {
@@ -415,14 +447,32 @@ button:disabled {
     grid-row: 2;
     max-width: 17rem;
   }
-  .motion-setting {
-    grid-column: 1;
-    grid-row: 2;
-    margin: 0 0 var(--space-2) var(--space-2);
-  }
   .build-drawer {
-    grid-column: 1;
-    grid-row: 3;
+    display: none;
+  }
+  .build-drawer.is-open {
+    background: var(--surface-module);
+    border: 1px solid var(--signal-flow);
+    bottom: var(--space-2);
+    display: grid;
+    left: var(--space-2);
+    max-height: min(72vh, 38rem);
+    overflow-y: auto;
+    position: fixed;
+    right: var(--space-2);
+    z-index: 5;
+  }
+  .build-drawer-backdrop {
+    background: rgb(0 0 0 / 50%);
+    border: 0;
+    display: block;
+    inset: 0;
+    position: fixed;
+    z-index: 4;
+  }
+  .drawer-close,
+  .build-drawer-toggle {
+    display: inline-flex;
   }
   .control-bar {
     grid-column: 1;
@@ -431,6 +481,28 @@ button:disabled {
   .control-bar span {
     margin-left: 0;
     width: 100%;
+  }
+  .factory-node {
+    align-content: center;
+    justify-items: center;
+  }
+  .factory-node .node-kind,
+  .factory-node .node-name,
+  .factory-node .node-buffers {
+    display: none;
+  }
+  .factory-node .node-icon {
+    color: var(--signal-flow);
+    display: block;
+    font-family: var(--font-data);
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .kind-seller .node-icon {
+    color: var(--signal-amber);
+  }
+  .kind-source .node-icon {
+    color: var(--signal-input);
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -8,18 +8,18 @@ test('builds and connects a profitable P0 chain without console errors', async (
 
   await page.goto('/');
   await expect(page.getByRole('heading', { name: "Don't Stop The Line" })).toBeVisible();
-  await page.getByRole('button', { name: 'Place processor' }).click();
+  await page.getByRole('button', { name: '基础加工器' }).click();
   await page
     .getByRole('application', { name: 'Factory board' })
     .click({ position: { x: 500, y: 350 } });
-  await expect(page.getByRole('button', { name: /processor-3/ })).toBeVisible();
+  await expect(page.getByRole('button', { exact: true, name: '加工器' })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Connect' }).click();
-  await page.getByRole('button', { name: /source-1/ }).click();
-  await page.getByRole('button', { name: /processor-3/ }).click();
-  await page.getByRole('button', { name: 'Connect' }).click();
-  await page.getByRole('button', { name: /processor-3/ }).click();
-  await page.getByRole('button', { name: /seller-2/ }).click();
+  await page.getByRole('button', { name: '连线' }).click();
+  await page.getByRole('button', { exact: true, name: '原料源' }).click();
+  await page.getByRole('button', { exact: true, name: '加工器' }).click();
+  await page.getByRole('button', { name: '连线' }).click();
+  await page.getByRole('button', { exact: true, name: '加工器' }).click();
+  await page.getByRole('button', { exact: true, name: '售卖站' }).click();
 
   await expect(page.locator('.money')).not.toHaveText(/\$ 0/, { timeout: 5000 });
   expect(errors).toEqual([]);
@@ -27,8 +27,10 @@ test('builds and connects a profitable P0 chain without console errors', async (
 
 test('shows a blocking explanation and keeps controls responsive', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: /source-1/ }).click();
-  await expect(page.getByText(/OUTPUT_FULL:/)).toBeVisible({ timeout: 3000 });
+  await page.getByRole('button', { exact: true, name: '原料源' }).click();
+  await expect(page.getByText('无法继续输出：请连接售卖站或缓冲仓。')).toBeVisible({
+    timeout: 3000,
+  });
 
   await page.getByRole('button', { name: '暂停' }).click();
   await expect(page.getByRole('button', { name: '继续' })).toBeVisible();
@@ -36,20 +38,20 @@ test('shows a blocking explanation and keeps controls responsive', async ({ page
   await expect(page.getByRole('button', { name: '4×' })).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('exposes the P1 strategy build and routing controls', async ({ page }) => {
+test('progressively discloses advanced builds and keeps routing controls accessible', async ({
+  page,
+}) => {
   await page.goto('/');
-  await expect(page.getByRole('button', { name: 'Place coal source' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Place maze producer' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '煤矿源' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '迷宫生产机' })).toHaveCount(0);
   await expect(page.getByText('先让货物持续出售')).toBeVisible();
   await page.getByLabel('减少动画').check();
-  await expect(page.getByRole('button', { name: 'Place gear assembler' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Place warehouse' })).toBeVisible();
-  await page.getByRole('button', { name: 'Wide line' }).click();
-  await expect(page.getByRole('button', { name: 'Wide line' })).toHaveAttribute(
+  await page.getByRole('button', { name: '宽线路' }).click();
+  await expect(page.getByRole('button', { name: '宽线路' })).toHaveAttribute(
     'aria-pressed',
     'true',
   );
-  await page.getByRole('button', { name: /source-1/ }).click();
-  await expect(page.getByRole('button', { name: 'Route overflow' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Upgrade' })).toBeVisible();
+  await page.getByRole('button', { exact: true, name: '原料源' }).click();
+  await expect(page.getByRole('button', { name: '优先溢出分流' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '升级设备' })).toBeVisible();
 });
