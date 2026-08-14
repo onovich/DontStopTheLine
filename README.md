@@ -1,27 +1,47 @@
-# Don't Stop The Line / 产线别停
+# DontStopTheLine
 
-一款在有限画布中搭建节点式自动化产线的 Web 优先游戏。旧 GDD 中的“节点工厂”仅为历史项目名。
+[简体中文](README.zh-CN.md)
 
-当前阶段：架构与研发基线。权威设计输入见 `docs/节点工厂_游戏设计文档_GDD_v1.pdf`，工程决策见 `docs/architecture.md`、`docs/ui-design.md` 与 `docs/roadmap.md`。
+Build a factory from nodes, not menus.
 
-当前执行计划：[`docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md`](docs/phase-7-inner-test-ui-ux-goal-mode-execution-guide.md)，预算 16 轮。
+![DontStopTheLine cover](docs/cover.png)
 
-## 工程命令
+## What it includes
 
-- `pnpm install`：安装依赖
-- `pnpm check`：格式、静态检查、类型、测试与架构边界总门禁
-- `pnpm build`：构建所有工作区
-- `pnpm test`：运行测试
-- `pnpm smoke`：以 Chromium 无头模式验证 Web 空壳可加载且无 console error
+- Web-first.
+- Node logistics.
+- Playable loops.
 
-首次安装后运行 `pnpm exec playwright install chromium` 下载本地 smoke 所需浏览器。CI 使用
-`pnpm install --frozen-lockfile`，随后依次执行 `pnpm check`、`pnpm build` 和 `pnpm smoke`。
+## Getting started
 
-Node.js 22+，pnpm 10+。正式实现从 Phase 0 开始。
+Install dependencies and start the local version:
 
-## Phase 1 simulation API
+```bash
+pnpm install
+```
 
-`@dstl/simulation` exposes the headless `createFactory`, `applyCommand`, `replayFactory`,
-`serializeSnapshot`, and read-only selector APIs. `@dstl/testkit` provides the fixed profit-chain
-fixture used for deterministic replay checks. No browser, canvas, Electron, or persistence APIs are
-part of the simulation package.
+The repository also provides `pnpm run build`、`pnpm run test`、`pnpm run lint`.
+
+## Repository map
+
+- `apps/` — Runnable applications.
+- `packages/` — Shared packages and domain modules.
+- `docs/` — Project documentation and design notes.
+- `.github` — Automation and GitHub Pages workflows.
+- `package.json` — Package scripts and dependencies.
+
+## Documentation
+
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/phase-0-goal-mode-execution-guide.md`](docs/phase-0-goal-mode-execution-guide.md)
+- [`docs/phase-1-goal-mode-execution-guide.md`](docs/phase-1-goal-mode-execution-guide.md)
+- [`docs/phase-2-goal-mode-execution-guide.md`](docs/phase-2-goal-mode-execution-guide.md)
+- [`docs/phase-3-goal-mode-execution-guide.md`](docs/phase-3-goal-mode-execution-guide.md)
+
+## Status
+
+The repository contains the implementation and project material described above. Automated tests are included; compatibility still depends on the target runtime, editor, or platform.
+
+## License
+
+No open-source license is currently included in this repository.
